@@ -205,23 +205,23 @@ def test_read_all_cols_all_dtypes(tickstore_lib, chunk_size):
 DUMMY_DATA = [
               {'a': 1.,
                'b': 2.,
-               'index': dt(2013, 1, 1, tzinfo=mktz('Europe/London'))
+               'index': dt(2013, 1, 1, tzinfo=mktz())
                },
               {'b': 3.,
                'c': 4.,
-               'index': dt(2013, 1, 2, tzinfo=mktz('Europe/London'))
+               'index': dt(2013, 1, 2, tzinfo=mktz())
                },
               {'b': 5.,
                'c': 6.,
-               'index': dt(2013, 1, 3, tzinfo=mktz('Europe/London'))
+               'index': dt(2013, 1, 3, tzinfo=mktz())
                },
               {'b': 7.,
                'c': 8.,
-               'index': dt(2013, 1, 4, tzinfo=mktz('Europe/London'))
+               'index': dt(2013, 1, 4, tzinfo=mktz())
                },
               {'b': 9.,
                'c': 10.,
-               'index': dt(2013, 1, 5, tzinfo=mktz('Europe/London'))
+               'index': dt(2013, 1, 5, tzinfo=mktz())
                },
               ]
 
@@ -283,11 +283,11 @@ def test_date_range_end_not_in_range(tickstore_lib):
     DUMMY_DATA = [
                   {'a': 1.,
                    'b': 2.,
-                   'index': dt(2013, 1, 1, tzinfo=mktz('Europe/London'))
+                   'index': dt(2013, 1, 1, tzinfo=mktz())
                    },
                   {'b': 3.,
                    'c': 4.,
-                   'index': dt(2013, 1, 2, 10, 1, tzinfo=mktz('Europe/London'))
+                   'index': dt(2013, 1, 2, 10, 1, tzinfo=mktz())
                    },
                   ]
 
@@ -341,15 +341,15 @@ def test_date_range_no_bounds(tickstore_lib):
     DUMMY_DATA = [
                   {'a': 1.,
                    'b': 2.,
-                   'index': dt(2013, 1, 1, tzinfo=mktz('Europe/London'))
+                   'index': dt(2013, 1, 1, tzinfo=mktz())
                    },
                   {'a': 3.,
                    'b': 4.,
-                   'index': dt(2013, 1, 30, tzinfo=mktz('Europe/London'))
+                   'index': dt(2013, 1, 30, tzinfo=mktz())
                    },
                   {'b': 5.,
                    'c': 6.,
-                   'index': dt(2013, 2, 2, 10, 1, tzinfo=mktz('Europe/London'))
+                   'index': dt(2013, 2, 2, 10, 1, tzinfo=mktz())
                    },
                   ]
 

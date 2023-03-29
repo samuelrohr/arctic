@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import copy
 import logging
+from inspect import signature
 from datetime import datetime as dt, timedelta
 
 import numpy as np
@@ -352,7 +353,12 @@ class TickStore(object):
 
         t = (dt.now() - perf_start).total_seconds()
         logger.info("Got data in %s secs, creating DataFrame..." % t)
-        mgr = _arrays_to_mgr(arrays, columns, index, columns, dtype=None)
+        __arrays_to_mgr_params = signature(_arrays_to_mgr).parameters
+        if "typ" in __arrays_to_mgr_params and "consolidate" in __arrays_to_mgr_params:
+            mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="block")
+        else:
+            mgr = _arrays_to_mgr(arrays, columns, index, columns, dtype=None)
+
         rtn = pd.DataFrame(mgr)
         # Present data in the user's default TimeZone
         rtn.index = rtn.index.tz_convert(mktz())
@@ -721,9 +727,10 @@ class TickStore(object):
             rtn[COLUMNS][col] = col_data
         rtn[INDEX] = Binary(
             lz4_compressHC(np.concatenate(
-                ([recs[index_name][0].astype('datetime64[ms]').view('uint64')],
+                ([np.array(recs[index_name][0]).astype('datetime64[ms]').view('uint64')],
                  np.diff(
                      recs[index_name].astype('datetime64[ms]').view('uint64')))).tostring()))
+
         return rtn, final_image
 
     @staticmethod

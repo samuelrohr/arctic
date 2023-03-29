@@ -57,13 +57,13 @@ def test_should_return_data_when_date_range_falls_in_a_single_underlying_library
     toplevel_tickstore._collection.insert_one({'start': dt(2010, 1, 1),
                                            'end': dt(2010, 12, 31, 23, 59, 59),
                                            'library_name': 'FEED_2010.LEVEL1'})
-    dates = pd.date_range('20100101', periods=6, tz=mktz('Europe/London'))
+    dates = pd.date_range('20100101', periods=6, tz=mktz())
     df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
     tstore.write('blah', df)
     tickstore_current.write('blah', df)
     res = toplevel_tickstore.read('blah', DateRange(start=dt(2010, 1, 1), end=dt(2010, 1, 6)), list('ABCD'))
 
-    assert_frame_equal_(df, res.tz_convert(mktz('Europe/London')), check_freq=False)
+    assert_frame_equal_(df, res.tz_convert(mktz()), check_freq=False)
 
 
 def test_should_return_data_when_date_range_spans_libraries(toplevel_tickstore, arctic):
@@ -73,15 +73,15 @@ def test_should_return_data_when_date_range_spans_libraries(toplevel_tickstore, 
     tickstore_2011 = arctic['FEED_2011.LEVEL1']
     toplevel_tickstore.add(DateRange(start=dt(2010, 1, 1), end=dt(2010, 12, 31, 23, 59, 59, 999000)), 'FEED_2010.LEVEL1')
     toplevel_tickstore.add(DateRange(start=dt(2011, 1, 1), end=dt(2011, 12, 31, 23, 59, 59, 999000)), 'FEED_2011.LEVEL1')
-    dates = pd.date_range('20100101', periods=6, tz=mktz('Europe/London'))
+    dates = pd.date_range('20100101', periods=6, tz=mktz())
     df_10 = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
     tickstore_2010.write('blah', df_10)
-    dates = pd.date_range('20110101', periods=6, tz=mktz('Europe/London'))
+    dates = pd.date_range('20110101', periods=6, tz=mktz())
     df_11 = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
     tickstore_2011.write('blah', df_11)
     res = toplevel_tickstore.read('blah', DateRange(start=dt(2010, 1, 2), end=dt(2011, 1, 4)), list('ABCD'))
     expected_df = pd.concat([df_10[1:], df_11[:4]])
-    assert_frame_equal(expected_df, res.tz_convert(mktz('Europe/London')))
+    assert_frame_equal(expected_df, res.tz_convert(mktz()))
 
 
 def test_should_return_data_when_date_range_spans_libraries_even_if_one_returns_nothing(toplevel_tickstore, arctic):
@@ -91,15 +91,15 @@ def test_should_return_data_when_date_range_spans_libraries_even_if_one_returns_
     tickstore_2011 = arctic['FEED_2011.LEVEL1']
     toplevel_tickstore.add(DateRange(start=dt(2010, 1, 1), end=dt(2010, 12, 31, 23, 59, 59, 999000)), 'FEED_2010.LEVEL1')
     toplevel_tickstore.add(DateRange(start=dt(2011, 1, 1), end=dt(2011, 12, 31, 23, 59, 59, 999000)), 'FEED_2011.LEVEL1')
-    dates = pd.date_range('20100101', periods=6, tz=mktz('Europe/London'))
+    dates = pd.date_range('20100101', periods=6, tz=mktz())
     df_10 = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
     tickstore_2010.write('blah', df_10)
-    dates = pd.date_range('20110201', periods=6, tz=mktz('Europe/London'))
+    dates = pd.date_range('20110201', periods=6, tz=mktz())
     df_11 = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
     tickstore_2011.write('blah', df_11)
     res = toplevel_tickstore.read('blah', DateRange(start=dt(2010, 1, 2), end=dt(2011, 1, 4)), list('ABCD'))
     expected_df = df_10[1:]
-    assert_frame_equal_(expected_df, res.tz_convert(mktz('Europe/London')), check_freq=False)
+    assert_frame_equal_(expected_df, res.tz_convert(mktz()), check_freq=False)
 
 
 def test_should_add_underlying_library_where_none_exists(toplevel_tickstore, arctic):
@@ -109,7 +109,8 @@ def test_should_add_underlying_library_where_none_exists(toplevel_tickstore, arc
 
 
 def test_should_add_underlying_library_where_another_library_exists_in_a_non_overlapping_daterange(toplevel_tickstore, arctic):
-    toplevel_tickstore._collection.insert_one({'library_name': 'FEED_2011.LEVEL1', 'start': dt(2011, 1, 1), 'end': dt(2011, 12, 31)})
+    # TODO: investigate why it's needed to inform timezone information in order to the unittest to pass
+    toplevel_tickstore._collection.insert_one({'library_name': 'FEED_2011.LEVEL1', 'start': dt(2011, 1, 1, tzinfo=mktz()), 'end': dt(2011, 12, 31, tzinfo=mktz())})
     arctic.initialize_library('FEED_2010.LEVEL1', tickstore.TICK_STORE_TYPE)
     toplevel_tickstore.add(DateRange(start=dt(2010, 1, 1), end=dt(2010, 12, 31, 23, 59, 59, 999000)), 'FEED_2010.LEVEL1')
     assert set([res['library_name'] for res in toplevel_tickstore._collection.find()]) == set(['FEED_2010.LEVEL1', 'FEED_2011.LEVEL1'])
@@ -190,15 +191,15 @@ def test_should_write_top_level_with_list_of_dicts(arctic):
     arctic.initialize_library('FEED_2011.LEVEL1', tickstore.TICK_STORE_TYPE)
     arctic.initialize_library('FEED.LEVEL1', toplevel.TICK_STORE_TYPE)
     toplevel_tickstore = arctic['FEED.LEVEL1']
-    dates = pd.date_range('20101201', periods=57, tz=mktz('Europe/London'))
+    dates = pd.date_range('20101201', periods=57, tz=mktz())
     data = [{'index': dates[i], 'a': i} for i in range(len(dates))]
     expected = pd.DataFrame(np.arange(57, dtype=np.float64), index=dates, columns=list('a'))
     toplevel_tickstore.write('blah', data)
     res = toplevel_tickstore.read('blah', DateRange(start=dt(2010, 12, 1), end=dt(2011, 2, 1)), columns=list('a'))
-    assert_frame_equal_(expected, res.tz_convert(mktz('Europe/London')), check_freq=False)
+    assert_frame_equal_(expected, res.tz_convert(mktz()), check_freq=False)
     lib2010 = arctic['FEED_2010.LEVEL1']
     res = lib2010.read('blah', DateRange(start=dt(2010, 12, 1), end=dt(2011, 1, 1)))
-    assert_frame_equal_(expected[dt(2010, 12, 1): dt(2010, 12, 31)], res.tz_convert(mktz('Europe/London')), check_freq=False)
+    assert_frame_equal_(expected[dt(2010, 12, 1): dt(2010, 12, 31)], res.tz_convert(mktz()), check_freq=False)
 
 
 def test_should_write_top_level_with_correct_timezone(arctic):

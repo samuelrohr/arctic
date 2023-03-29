@@ -1,0 +1,72 @@
+## Load the docker image to be used my the runner
+image: continuumio/miniconda3:latest
+
+## All stages could be customized. The following are just examples
+stages:
+  - test_homolog
+  - test_master
+  - deploy_snap
+  - deploy
+
+test_homolog:
+  stage: test_homolog
+  script:
+    ## Install gcc
+    - apt-get update
+    - apt-get install -y gcc g++
+
+    ## Create Conda environment
+    - conda create -n model python=3.9
+    - source activate model
+
+    - pip install --upgrade pip coverage
+    ## Install requirements
+    - pip install --extra-index-url https://$GS_PYPI_USER:$GS_PYPI_PWD@nexus.giantsteps.me/repository/gs_pypi_snapshot/simple/ .[tests]
+
+    ## Only run unittests - Integration tests are run apart
+    - coverage run -m pytest tests/unit -v
+    - coverage report
+  coverage: '/TOTAL[\s\d]+\s(\d{1,3}%)/'
+
+test_master:
+  stage: test_master
+  only:
+    - master
+  script:
+    ## Install gcc
+    - apt-get update
+    - apt-get install -y gcc g++
+
+    ## Create Conda environment
+    - conda create -n model python=3.9
+    - source activate model
+
+    - pip install --upgrade pip coverage
+    ## Install requirements
+    - pip install --extra-index-url https://$GS_PYPI_USER:$GS_PYPI_PWD@nexus.giantsteps.me/repository/gs_pypi/simple/ .[tests]
+    ## Only run unittests - Integration tests are run apart
+    - coverage run -m pytest tests/unit -v
+    - coverage report
+  coverage: '/TOTAL[\s\d]+\s(\d{1,3}%)/'
+
+deploy_snap:
+  stage: deploy_snap
+  only:
+    - homolog
+  script:
+    - conda create -n deployer python=3.9
+    - source activate deployer
+    - pip install --upgrade setuptools wheel twine
+    - python setup.py sdist bdist_wheel
+    - twine upload -u $GS_PYPI_USER -p $GS_PYPI_PWD --repository-url https://nexus.giantsteps.me/repository/gs_pypi_snapshot/ dist/*
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - conda create -n deployer python=3.9
+    - source activate deployer
+    - pip install --upgrade setuptools wheel twine
+    - python setup.py sdist bdist_wheel
+    - twine upload -u $GS_PYPI_USER -p $GS_PYPI_PWD --repository-url https://nexus.giantsteps.me/repository/gs_pypi/ dist/*

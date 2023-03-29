@@ -215,12 +215,17 @@ class PandasDataFrameStore(PandasStore):
         return super(PandasDataFrameStore, self).read_options()
 
 
+# Panel can no longer be imported since Pandas 1.1.5
 class PandasPanelStore(PandasDataFrameStore):
     TYPE = 'pandaspan'
 
     @staticmethod
     def can_write_type(data):
-        return isinstance(data, Panel)
+        try:
+            return isinstance(data, Panel)
+        # Panel can no longer be import since Pandas 1.1.5
+        except NameError:
+            return False
 
     def can_write(self, version, symbol, data):
         if self.can_write_type(data):

@@ -1,4 +1,6 @@
+import dateutil.tz
 import logging
+import re
 
 import numpy as np
 from pandas import DataFrame, MultiIndex, Series, DatetimeIndex, Index
@@ -64,8 +66,11 @@ def _multi_index_to_records(index, empty_index):
     index_tz = []
     for i in index.levels:
         if isinstance(i, DatetimeIndex):
-            tmp = get_timezone(i.tz)
-            index_tz.append(str(tmp) if tmp is not None else None)
+            if i.tz is None:
+                index_tz.append(None)
+            else:
+                tmp = get_timezone(i.tz)
+                index_tz.append(str(tmp) if tmp is not None else None)
         else:
             index_tz.append(None)
 
@@ -119,6 +124,15 @@ class PandasSerializer(object):
                 if level_no < len(index_tz):
                     tz = index_tz[level_no]
                     if tz is not None:
+                        if "tzfile" in tz:
+                            # tz can be a String pointing to a tzfile, e.g., "tzfile('/usr/share/zoneinfo/UTC')"
+                            # Extract the filepath from the String
+                            file_pattern = r"\((.*?)\)"
+                            tz_file_path = re.findall(file_pattern, tz)[0]
+                            # Use dateutil create a tzfile object from filepath
+                            # eval() is used to remove single-quotes
+                            tz = dateutil.tz.tz.gettz(eval(tz_file_path))
+
                         if not isinstance(level, DatetimeIndex) and len(level) == 0:
                             # index type information got lost during save as the index was empty, cast back
                             level = DatetimeIndex([], tz=tz)

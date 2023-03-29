@@ -33,6 +33,7 @@ def test_cleanup_orphaned_chunks(mongo_host, library, data, dry_run, fw_pointers
     """
     Check that we do / don't cleanup chunks based on the dry-run
     """
+    # TODO: This test was already failing in previous versions of Arctic, Pandas, Python and Numpy
     with FwPointersCtx(fw_pointers_config):
         yesterday = dt.utcnow() - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
@@ -142,6 +143,7 @@ def test_cleanup_orphaned_snapshots(mongo_host, library, data, dry_run, fw_point
     """
     Check that we do / don't cleanup chunks based on the dry-run
     """
+    # TODO: This test was already failing in previous versions of Arctic, Pandas, Python and Numpy
     with FwPointersCtx(fw_pointers_config):
         yesterday = dt.utcnow() - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
