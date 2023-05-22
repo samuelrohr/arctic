@@ -9,11 +9,11 @@ import pytest
 from pandas import DataFrame, MultiIndex, Index, Series
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from arctic._util import mongo_count
-from arctic.chunkstore.chunkstore import START, SYMBOL
-from arctic.chunkstore.passthrough_chunker import PassthroughChunker
-from arctic.date import DateRange
-from arctic.exceptions import NoDataFoundException
+from giantarctic._util import mongo_count
+from giantarctic.chunkstore.chunkstore import START, SYMBOL
+from giantarctic.chunkstore.passthrough_chunker import PassthroughChunker
+from giantarctic.date import DateRange
+from giantarctic.exceptions import NoDataFoundException
 from tests.integration.chunkstore.test_utils import create_test_data
 from tests.util import assert_frame_equal_, assert_series_equal_
 

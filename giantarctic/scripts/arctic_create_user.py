@@ -5,7 +5,7 @@ import uuid
 
 from pymongo import MongoClient
 
-from arctic.arctic import Arctic
+from giantarctic.arctic import Arctic
 from .utils import do_db_auth
 from ..hooks import get_mongodb_uri
 

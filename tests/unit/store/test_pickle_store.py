@@ -9,10 +9,10 @@ from bson.objectid import ObjectId
 from mock import create_autospec, sentinel, Mock, call
 import pickle
 
-from arctic._compression import compress, compressHC
-from arctic.exceptions import UnsupportedPickleStoreVersion
-from arctic.store._pickle_store import PickleStore
-from arctic.store._version_store_utils import checksum
+from giantarctic._compression import compress, compressHC
+from giantarctic.exceptions import UnsupportedPickleStoreVersion
+from giantarctic.store._pickle_store import PickleStore
+from giantarctic.store._version_store_utils import checksum
 
 PANDAS_VERSION = LooseVersion(pd.__version__)
 

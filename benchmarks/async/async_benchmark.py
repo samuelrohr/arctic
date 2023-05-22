@@ -1,9 +1,9 @@
 import time
 
 
-import arctic._compression as aclz4
-from arctic import Arctic
-from arctic.async import ASYNC_ARCTIC, async_arctic_submit, async_wait_requests
+import giantarctic._compression as aclz4
+from giantarctic import Arctic
+from giantarctic.async import ASYNC_ARCTIC, async_arctic_submit, async_wait_requests
 from tests.integration.chunkstore.test_utils import create_test_data
 
 a = Arctic('localhost:27017')

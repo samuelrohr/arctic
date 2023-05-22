@@ -3,9 +3,9 @@ import pytest
 from mock import Mock, sentinel, ANY, call
 from pymongo.errors import OperationFailure
 
-from arctic.exceptions import ConcurrentModificationException, NoDataFoundException
-from arctic.store.audit import ArcticTransaction, DataChange
-from arctic.store.version_store import VersionedItem, VersionStore
+from giantarctic.exceptions import ConcurrentModificationException, NoDataFoundException
+from giantarctic.store.audit import ArcticTransaction, DataChange
+from giantarctic.store.version_store import VersionedItem, VersionStore
 
 
 def test_data_change():

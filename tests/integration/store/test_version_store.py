@@ -14,15 +14,15 @@ from pandas.util.testing import assert_frame_equal, assert_series_equal
 from pymongo.errors import OperationFailure
 from pymongo.server_type import SERVER_TYPE
 
-import arctic
-from arctic import VERSION_STORE, PandasDataFrameStore, PandasSeriesStore
-from arctic._config import FwPointersCfg, FW_POINTERS_REFS_KEY
-from arctic._util import mongo_count, get_fwptr_config
-from arctic.date import DateRange
-from arctic.date._mktz import mktz
-from arctic.exceptions import NoDataFoundException, DuplicateSnapshotException, ArcticException
-from arctic.store import _version_store_utils
-from arctic.store import version_store
+import giantarctic
+from giantarctic import VERSION_STORE, PandasDataFrameStore, PandasSeriesStore
+from giantarctic._config import FwPointersCfg, FW_POINTERS_REFS_KEY
+from giantarctic._util import mongo_count, get_fwptr_config
+from giantarctic.date import DateRange
+from giantarctic.date._mktz import mktz
+from giantarctic.exceptions import NoDataFoundException, DuplicateSnapshotException, ArcticException
+from giantarctic.store import _version_store_utils
+from giantarctic.store import version_store
 from tests.unit.serialization.serialization_test_data import _mixed_test_data
 from ...util import read_str_as_pandas
 from ..test_utils import enable_profiling_for_library
@@ -58,15 +58,15 @@ class FwPointersCtx:
         self.do_reconcile = do_reconcile
 
     def __enter__(self):
-        self.orig_value = arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.value_to_test
+        self.orig_value = giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.value_to_test
 
-        self.reconcile_orig_value = arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.do_reconcile
+        self.reconcile_orig_value = giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.do_reconcile
 
     def __exit__(self, *args):
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.orig_value
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.reconcile_orig_value
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.orig_value
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.reconcile_orig_value
 
 
 from pymongo.cursor import _QUERY_OPTIONS
@@ -114,7 +114,7 @@ def test_store_item_new_version(library, library_name):
 
 @pytest.mark.xfail(reason="mongo/pymongo codepaths have changed, query no longer called for this")
 def test_store_item_read_preference(library_secondary, library_name):
-    with patch('arctic.arctic.ArcticLibraryBinding.check_quota'), \
+    with patch('giantarctic.arctic.ArcticLibraryBinding.check_quota'), \
          patch('pymongo.message.query', side_effect=_query(False, library_name)) as query, \
          patch('pymongo.server_description.ServerDescription.server_type', SERVER_TYPE.Mongos):
         # write an item
@@ -1161,7 +1161,7 @@ def test_write_metadata(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a, mydf_b = _rnd_df(10, 5), _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write(symbol, data=mydf_b, metadata={'field_a': 2})  # creates version 2
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 3 (only metadata)
@@ -1183,7 +1183,7 @@ def test_write_metadata_followed_by_append(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a, mydf_b = _rnd_df(10, 5), _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2 (only metadata)
             library.append(symbol, data=mydf_b, metadata={'field_c': 1})  # creates version 3
@@ -1203,7 +1203,7 @@ def test_write_metadata_followed_by_append(library, fw_pointers_cfg):
 def test_write_metadata_new_symbol(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 1 (only metadata)
             v = library.read(symbol)
             assert v.data == None
@@ -1216,7 +1216,7 @@ def test_write_metadata_after_append(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a, mydf_b = _rnd_df(10, 5), _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.append(symbol, data=mydf_b, metadata={'field_a': 2})  # creates version 2
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 3
@@ -1231,7 +1231,7 @@ def test_write_metadata_purge_previous_versions(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a, mydf_b, mydf_c = _rnd_df(10, 5), _rnd_df(10, 5), _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             with FwPointersCtx(fw_pointers_cfg):
                 library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
                 library.write(symbol, data=mydf_b, metadata={'field_a': 2})  # creates version 2
@@ -1262,7 +1262,7 @@ def test_write_metadata_delete_symbol(library, fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
         mydf_b = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2 (only metadata)
 
@@ -1280,7 +1280,7 @@ def test_write_metadata_snapshots(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a, mydf_b = _rnd_df(10, 5), _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.snapshot('SNAP_1')
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2 (only metadata)
@@ -1309,7 +1309,7 @@ def test_restore_version(library, fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
         mydf_b = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write(symbol, data=mydf_b, metadata={'field_a': 2})  # creates version 2
 
@@ -1335,7 +1335,7 @@ def test_restore_version_followed_by_append(library, fw_pointers_cfg):
         mydf_a = _rnd_df(10, 5)
         mydf_b = _rnd_df(10, 5)
         mydf_c = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write(symbol, data=mydf_b, metadata={'field_b': 2})  # creates version 2
 
@@ -1361,7 +1361,7 @@ def test_restore_version_purging_previous_versions(library, fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
         mydf_b = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write(symbol, data=mydf_b, metadata={'field_a': 2})  # creates version 2
 
@@ -1386,7 +1386,7 @@ def test_restore_version_non_existent_version(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
 
             with pytest.raises(NoDataFoundException):
@@ -1404,7 +1404,7 @@ def test_restore_version_which_updated_only_metadata(library, fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
         mydf_b = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2
             library.write(symbol, data=mydf_b)  # creates version 3
@@ -1425,7 +1425,7 @@ def test_restore_version_then_snapshot(library, fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
         mydf_b = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2
 
@@ -1447,7 +1447,7 @@ def test_restore_version_latest_snapshot_noop(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2
             library.snapshot('SNAP_1')
@@ -1467,7 +1467,7 @@ def test_restore_version_latest_version_noop(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 2
 
@@ -1486,7 +1486,7 @@ def test_restore_version_snap_delete_symbol_restore(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf = _rnd_df(20, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf[:10], metadata={'field_a': 1})  # creates version 1
             library.append(symbol, data=mydf[10:15])  # version 2
             library.snapshot('snapA')
@@ -1509,7 +1509,7 @@ def test_restore_from_version_with_deleted_symbol(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         symbol = 'FTL'
         mydf_a = _rnd_df(10, 5)
-        with patch('arctic.arctic.logger.info') as info:
+        with patch('giantarctic.arctic.logger.info') as info:
             library.write(symbol, data=mydf_a, metadata={'field_a': 1})  # creates version 1
             library.delete(symbol)
 
@@ -1532,7 +1532,7 @@ def test_prune_previous_versions_retries_on_cleanup_error(library, fw_pointers_c
         library.write(symbol, ts1)
         library.write(symbol, ts2)
 
-        with patch("arctic.store.version_store.cleanup", side_effect=_cleanup) as cleanup:
+        with patch("giantarctic.store.version_store.cleanup", side_effect=_cleanup) as cleanup:
             cleanup.__name__ = "cleanup"  # required by functools.wraps
             library._prune_previous_versions(symbol, keep_mins=0)
 
@@ -1565,7 +1565,7 @@ def test_prune_previous_versions_retries_find_calls(library, fw_pointers_cfg):
 @pytest.mark.parametrize('fw_pointers_cfg', [FwPointersCfg.DISABLED, FwPointersCfg.HYBRID, FwPointersCfg.ENABLED])
 def test_append_does_not_duplicate_data_when_prune_fails(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
-        side_effect = [OperationFailure(0), arctic.store.version_store.VersionStore._prune_previous_versions]
+        side_effect = [OperationFailure(0), giantarctic.store.version_store.VersionStore._prune_previous_versions]
         new_data = read_str_as_pandas("""times | near
         2013-01-01 17:06:11.040 |  7.0
         2013-01-02 17:06:11.040 |  8.2
@@ -1573,7 +1573,7 @@ def test_append_does_not_duplicate_data_when_prune_fails(library, fw_pointers_cf
         2013-01-04 17:06:11.040 |  0.7""")
         library.write(symbol, ts1)
 
-        with patch.object(arctic.store.version_store.VersionStore, "_prune_previous_versions", autospec=True, side_effect=side_effect):
+        with patch.object(giantarctic.store.version_store.VersionStore, "_prune_previous_versions", autospec=True, side_effect=side_effect):
             library.append(symbol, new_data)
 
         data = library.read(symbol).data
@@ -1584,10 +1584,10 @@ def test_append_does_not_duplicate_data_when_prune_fails(library, fw_pointers_cf
 def test_write_does_not_succeed_with_a_prune_error(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
         # More than max retries OperationFailure would be more realistic, but ValueError is used for simplicity
-        side_effect = [ValueError, arctic.store.version_store.VersionStore._prune_previous_versions]
+        side_effect = [ValueError, giantarctic.store.version_store.VersionStore._prune_previous_versions]
         library.write(symbol, ts1)
 
-        with patch.object(arctic.store.version_store.VersionStore, "_prune_previous_versions", autospec=True, side_effect=side_effect):
+        with patch.object(giantarctic.store.version_store.VersionStore, "_prune_previous_versions", autospec=True, side_effect=side_effect):
             with pytest.raises(ValueError):
                 library.write(symbol, ts1)
 
@@ -1630,7 +1630,7 @@ def test_snapshot_list_versions_after_delete(library, library_name, fw_pointers_
 def test_write_non_serializable_throws(arctic):
     lib_name = 'write_hanlder_test'
     arctic.initialize_library(lib_name, VERSION_STORE)
-    with patch('arctic.store.version_store.STRICT_WRITE_HANDLER_MATCH', True):
+    with patch('giantarctic.store.version_store.STRICT_WRITE_HANDLER_MATCH', True):
         library = arctic[lib_name]
 
         # Check that falling back to a pickle from a dataframe throws
@@ -1662,7 +1662,7 @@ def test_write_strict_no_daterange(arctic, fw_pointers_cfg):
         arctic.initialize_library(lib_name, VERSION_STORE)
 
         # Write with pickling
-        with patch('arctic.store.version_store.STRICT_WRITE_HANDLER_MATCH', True):
+        with patch('giantarctic.store.version_store.STRICT_WRITE_HANDLER_MATCH', True):
             library = arctic[lib_name]
             data = [dict(a=1)]
             library.write('ns4', data)
@@ -1682,7 +1682,7 @@ def test_handler_check_default_false(arctic):
 
 
 def test_handler_check_default_osenviron(arctic):
-    with patch('arctic.store.version_store.STRICT_WRITE_HANDLER_MATCH', True):
+    with patch('giantarctic.store.version_store.STRICT_WRITE_HANDLER_MATCH', True):
         lib_name = 'write_hanlder_test2'
         arctic.initialize_library(lib_name, VERSION_STORE)
         assert arctic[lib_name]._with_strict_handler_match is True
@@ -1781,7 +1781,7 @@ def test_fwpointers_mixed_scenarios(library, write_cfg, read_cfg, append_cfg, re
             # append is converted to write
             assert last_v.get('append_count', 0) == 0
 
-    orig_check_written = arctic.store._ndarray_store.NdarrayStore.check_written
+    orig_check_written = giantarctic.store._ndarray_store.NdarrayStore.check_written
     outer = {'round': -1,     # unfortunately "nonlocal" keyword is not available in Python 2, this is a workaround
              'raised': False}
 
@@ -1797,11 +1797,11 @@ def test_fwpointers_mixed_scenarios(library, write_cfg, read_cfg, append_cfg, re
     to_write = mydf[:len(mydf) // 2]
     to_append = mydf[len(mydf) // 2:]
 
-    with patch('arctic.store._ndarray_store.NdarrayStore.check_written') as mock_check_written:
+    with patch('giantarctic.store._ndarray_store.NdarrayStore.check_written') as mock_check_written:
         mock_check_written.side_effect = _mock_check_written
 
         # Patch safely the check_written static method to always fail once and trigger mongo_retry for better coverage
-        arctic.store._ndarray_store.NdarrayStore.check_written = _mock_check_written
+        giantarctic.store._ndarray_store.NdarrayStore.check_written = _mock_check_written
 
         # The write
         with FwPointersCtx(write_cfg):
@@ -1891,7 +1891,7 @@ def test_fwpointer_enabled_write_delete_keep_version_append(library):
 
 
 def test_version_arctic_version(arctic):
-    import arctic.store.version_store as vs
+    import giantarctic.store.version_store as vs
     orig_val = vs.ARCTIC_VERSION_NUMERICAL
     try:
         lib_name = 'arctic_version_test'

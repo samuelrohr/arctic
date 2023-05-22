@@ -4,8 +4,8 @@ import bson
 import numpy as np
 from mock import patch
 
-from arctic._util import mongo_count
-from arctic.arctic import Arctic
+from giantarctic._util import mongo_count
+from giantarctic.arctic import Arctic
 
 
 def test_save_read_bson(library):

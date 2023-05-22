@@ -5,8 +5,8 @@ from multiprocessing import Process, Semaphore
 
 from pandas.core.frame import DataFrame
 
-from arctic.arctic import Arctic
-from arctic.exceptions import OptimisticLockException
+from giantarctic.arctic import Arctic
+from giantarctic.exceptions import OptimisticLockException
 
 
 class Appender(object):

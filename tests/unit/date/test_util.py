@@ -5,9 +5,9 @@ import sys
 import pytest
 from mock import patch
 
-from arctic.date import datetime_to_ms, ms_to_datetime, mktz, to_pandas_closed_closed, DateRange, OPEN_OPEN, \
+from giantarctic.date import datetime_to_ms, ms_to_datetime, mktz, to_pandas_closed_closed, DateRange, OPEN_OPEN, \
     CLOSED_CLOSED
-from arctic.date._util import to_dt, utc_dt_to_local_dt
+from giantarctic.date._util import to_dt, utc_dt_to_local_dt
 
 
 @pytest.mark.parametrize('pdt', [
@@ -121,7 +121,7 @@ def test_daterange_lt():
     assert((dr2 < dr) == False)
 
 
-@patch("arctic.date._util.mktz", lambda zone="Asia/Shanghai": mktz(zone))
+@patch("giantarctic.date._util.mktz", lambda zone="Asia/Shanghai": mktz(zone))
 def test_utc_dt_to_local_dt():
     with pytest.raises(ValueError):
         assert(utc_dt_to_local_dt(

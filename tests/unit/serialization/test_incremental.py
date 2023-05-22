@@ -2,9 +2,9 @@ import itertools
 
 import pytest
 
-from arctic.exceptions import ArcticSerializationException
-from arctic.serialization.incremental import IncrementalPandasToRecArraySerializer
-from arctic.serialization.numpy_records import DataFrameSerializer
+from giantarctic.exceptions import ArcticSerializationException
+from giantarctic.serialization.incremental import IncrementalPandasToRecArraySerializer
+from giantarctic.serialization.numpy_records import DataFrameSerializer
 from tests.unit.serialization.serialization_test_data import _mixed_test_data, is_test_data_serializable
 
 _CHUNK_SIZE = 2 * 1024 * 1024 - 2048

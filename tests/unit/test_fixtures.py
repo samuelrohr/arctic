@@ -1,7 +1,7 @@
 from mock import Mock
 
-import arctic.fixtures.arctic as fix
-from arctic.arctic import Arctic
+import giantarctic.fixtures.arctic as fix
+from giantarctic.arctic import Arctic
 
 
 def test_overlay_library_name(overlay_library_name):

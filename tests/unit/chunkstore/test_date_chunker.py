@@ -5,8 +5,8 @@ import pytest
 from pandas import DataFrame, MultiIndex
 from pandas.util.testing import assert_frame_equal
 
-from arctic.chunkstore.date_chunker import DateChunker
-from arctic.date import DateRange
+from giantarctic.chunkstore.date_chunker import DateChunker
+from giantarctic.date import DateRange
 
 
 def test_date_filter():

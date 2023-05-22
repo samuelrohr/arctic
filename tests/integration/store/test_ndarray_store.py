@@ -6,10 +6,10 @@ import pytest
 from mock import patch
 from pymongo.server_type import SERVER_TYPE
 
-from arctic._config import FwPointersCfg, FW_POINTERS_REFS_KEY
-from arctic._util import mongo_count
-from arctic.store._ndarray_store import NdarrayStore
-from arctic.store.version_store import register_versioned_storage
+from giantarctic._config import FwPointersCfg, FW_POINTERS_REFS_KEY
+from giantarctic._util import mongo_count
+from giantarctic.store._ndarray_store import NdarrayStore
+from giantarctic.store.version_store import register_versioned_storage
 from tests.integration.store.test_version_store import _query, FwPointersCtx
 
 register_versioned_storage(NdarrayStore)
@@ -57,7 +57,7 @@ def test_save_read_big_1darray(library, fw_pointers_cfg):
 @pytest.mark.parametrize('fw_pointers_cfg', [FwPointersCfg.DISABLED, FwPointersCfg.HYBRID, FwPointersCfg.ENABLED])
 def test_save_and_resave_reuses_chunks(library, fw_pointers_cfg):
     with FwPointersCtx(fw_pointers_cfg):
-        with patch('arctic.store._ndarray_store._CHUNK_SIZE', 1000):
+        with patch('giantarctic.store._ndarray_store._CHUNK_SIZE', 1000):
             ndarr = np.random.rand(1024)
             library.write('MYARR', ndarr)
             saved_arr = library.read('MYARR').data

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from mock import sentinel
 
-from arctic.store._version_store_utils import _split_arrs, checksum, version_base_or_id
+from giantarctic.store._version_store_utils import _split_arrs, checksum, version_base_or_id
 
 
 def test_split_arrs_empty():

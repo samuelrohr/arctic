@@ -1,14 +1,14 @@
 from mock import patch, call, ANY
 
-from arctic.scripts.arctic_create_user import main
+from giantarctic.scripts.arctic_create_user import main
 from ...util import run_as_main
 
 
 def test_main_minimal():
-    with patch('arctic.scripts.arctic_create_user.logger', autospec=True) as logger, \
-         patch('arctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
-         patch('arctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_create_user.do_db_auth', autospec=True) as do_db_auth:
+    with patch('giantarctic.scripts.arctic_create_user.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
+         patch('giantarctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_create_user.do_db_auth', autospec=True) as do_db_auth:
         run_as_main(main, '--host', 'some_host',
                           '--password', 'asdf',
                           'user')
@@ -25,9 +25,9 @@ def test_main_minimal():
 
 
 def test_main_with_db():
-    with patch('arctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
-         patch('arctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_create_user.do_db_auth', autospec=True) as do_db_auth:
+    with patch('giantarctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
+         patch('giantarctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_create_user.do_db_auth', autospec=True) as do_db_auth:
         run_as_main(main, '--host', 'some_host',
                     '--db', 'some_db',
                     'jblackburn')
@@ -42,9 +42,9 @@ def test_main_with_db():
 
 
 def test_main_with_db_write():
-    with patch('arctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
-         patch('arctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_create_user.do_db_auth', autospec=True) as do_db_auth:
+    with patch('giantarctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
+         patch('giantarctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_create_user.do_db_auth', autospec=True) as do_db_auth:
         run_as_main(main, '--host', 'some_host',
                     '--db', 'some_db',
                     '--write',
@@ -60,10 +60,10 @@ def test_main_with_db_write():
 
 
 def test_no_auth():
-    with patch('arctic.scripts.arctic_create_user.logger', autospec=True) as logger, \
-         patch('arctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
-         patch('arctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_create_user.do_db_auth', autospec=True,
+    with patch('giantarctic.scripts.arctic_create_user.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.arctic_create_user.MongoClient', autospec=True) as MC, \
+         patch('giantarctic.scripts.arctic_create_user.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_create_user.do_db_auth', autospec=True,
                return_value=False) as do_db_auth:
         run_as_main(main, '--host', 'some_host',
                           'jblackburn')

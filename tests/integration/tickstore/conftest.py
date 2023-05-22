@@ -1,7 +1,7 @@
 import pytest
 
-from arctic.tickstore import tickstore
-from arctic.tickstore import toplevel
+from giantarctic.tickstore import tickstore
+from giantarctic.tickstore import toplevel
 
 
 def pytest_generate_tests(metafunc):

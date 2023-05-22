@@ -1,4 +1,4 @@
-from arctic.decorators import _get_host
+from giantarctic.decorators import _get_host
 
 
 def test_get_host_VersionStore(library, mongo_host):

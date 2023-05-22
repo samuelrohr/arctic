@@ -3,8 +3,8 @@ from datetime import datetime as dt
 import numpy as np
 import pytest
 
-from arctic.date import DateRange, CLOSED_OPEN, mktz
-from arctic.exceptions import NoDataFoundException
+from giantarctic.date import DateRange, CLOSED_OPEN, mktz
+from giantarctic.exceptions import NoDataFoundException
 
 
 def test_delete(tickstore_lib):

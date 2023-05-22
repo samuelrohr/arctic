@@ -2,7 +2,7 @@ import getpass
 
 import pytest
 
-from arctic.scripts import arctic_delete_library
+from giantarctic.scripts import arctic_delete_library
 from ...util import run_as_main
 
 

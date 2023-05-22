@@ -5,8 +5,8 @@ import bson
 import pytest
 from mock import patch, sentinel
 
-from arctic._util import mongo_count, FwPointersCfg
-from arctic.scripts.arctic_fsck import main
+from giantarctic._util import mongo_count, FwPointersCfg
+from giantarctic.scripts.arctic_fsck import main
 from tests.integration.store.test_version_store import FwPointersCtx
 from ...util import run_as_main, read_str_as_pandas
 
@@ -123,7 +123,7 @@ def test_cleanup_orphaned_chunk_doesnt_break_versions(mongo_host, library, data,
         # Re-Write the data again
         # Write a whole new version rather than going down the append path...
         #     - we want two self-standing versions, the removal of one shouldn't break the other...
-        with patch('arctic.store._ndarray_store._APPEND_COUNT', 0):
+        with patch('giantarctic.store._ndarray_store._APPEND_COUNT', 0):
             library.write('symbol', data, prune_previous_version=False)
         library._delete_version('symbol', 1)
         library._collection.versions.delete_one({'_id': _id})

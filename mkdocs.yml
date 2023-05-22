@@ -4,7 +4,7 @@ site_url: https://github.com/man-group/arctic
 site_description: High performance datastore for numeric data
 
 # Repository info
-repo_name: 'arctic'
+repo_name: 'giantarctic'
 repo_url: 'https://github.com/man-group/arctic'
 edit_uri: edit/master/docs/
 

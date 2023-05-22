@@ -16,11 +16,11 @@ from pandas.tseries.offsets import DateOffset
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 from io import StringIO
 
-from arctic._compression import decompress
-from arctic.date import DateRange, mktz
+from giantarctic._compression import decompress
+from giantarctic.date import DateRange, mktz
 # Do not remove PandasStore, used in global scope
-from arctic.store._pandas_ndarray_store import PandasDataFrameStore, PandasSeriesStore, PandasStore
-from arctic.store.version_store import register_versioned_storage
+from giantarctic.store._pandas_ndarray_store import PandasDataFrameStore, PandasSeriesStore, PandasStore
+from giantarctic.store.version_store import register_versioned_storage
 from tests.util import assert_frame_equal_, assert_series_equal_
 
 register_versioned_storage(PandasDataFrameStore)
@@ -754,10 +754,10 @@ def test_daterange_end(library):
     df.columns = [str(c) for c in df.columns]
     library.write('MYARR', df)
     mdecompressALL = Mock(side_effect=decompress)
-    with patch('arctic.store._ndarray_store.decompress', mdecompressALL):
+    with patch('giantarctic.store._ndarray_store.decompress', mdecompressALL):
         library.read('MYARR').data
     mdecompressLR = Mock(side_effect=decompress)
-    with patch('arctic.store._ndarray_store.decompress', mdecompressLR):
+    with patch('giantarctic.store._ndarray_store.decompress', mdecompressLR):
         result = library.read('MYARR', date_range=DateRange(df.index[-1], df.index[-1])).data
     assert len(result) == 1
     assert mdecompressLR.call_count < mdecompressALL.call_count
@@ -769,10 +769,10 @@ def test_daterange_start(library):
     df.columns = [str(c) for c in df.columns]
     library.write('MYARR', df)
     mdecompressALL = Mock(side_effect=decompress)
-    with patch('arctic.store._ndarray_store.decompress', mdecompressALL):
+    with patch('giantarctic.store._ndarray_store.decompress', mdecompressALL):
         library.read('MYARR').data
     mdecompressLR = Mock(side_effect=decompress)
-    with patch('arctic.store._ndarray_store.decompress', mdecompressLR):
+    with patch('giantarctic.store._ndarray_store.decompress', mdecompressLR):
         result = library.read('MYARR', date_range=DateRange(end=df.index[0])).data
     assert len(result) == 1
     assert mdecompressLR.call_count < mdecompressALL.call_count

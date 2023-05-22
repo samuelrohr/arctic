@@ -3,7 +3,7 @@ import uuid
 
 from enum import Enum
 
-from arctic.exceptions import RequestDurationException
+from giantarctic.exceptions import RequestDurationException
 
 
 class AsyncRequestType(Enum):

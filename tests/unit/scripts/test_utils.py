@@ -1,6 +1,6 @@
 from mock import patch, Mock, call, MagicMock
 
-from arctic.scripts.utils import do_db_auth
+from giantarctic.scripts.utils import do_db_auth
 
 
 def test_do_db_auth():
@@ -8,8 +8,8 @@ def test_do_db_auth():
     admin_creds = Mock()
     user_creds = Mock()
     connection = MagicMock()
-    with patch('arctic.scripts.utils.logger', autospec=True) as logger, \
-         patch('arctic.scripts.utils.get_auth', autospec=True, side_effect=[admin_creds, user_creds]) as get_auth:
+    with patch('giantarctic.scripts.utils.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.utils.get_auth', autospec=True, side_effect=[admin_creds, user_creds]) as get_auth:
         assert do_db_auth('hostname', connection, 'arctic_user')
 
     assert get_auth.call_args_list == [call('hostname', 'admin', 'admin'),
@@ -27,8 +27,8 @@ def test_do_db_auth_no_admin():
     user_creds = Mock()
     connection = MagicMock()
     # Create the user agains the current mongo database
-    with patch('arctic.scripts.utils.logger', autospec=True) as logger, \
-         patch('arctic.scripts.utils.get_auth', side_effect=[None, user_creds],
+    with patch('giantarctic.scripts.utils.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.utils.get_auth', side_effect=[None, user_creds],
               autospec=True) as get_auth:
 
         connection.admin.authenticate.return_value = False
@@ -43,8 +43,8 @@ def test_do_db_auth_no_admin():
 def test_do_db_auth_no_user_creds():
     user_creds = Mock()
     connection = MagicMock()
-    with patch('arctic.scripts.utils.logger', autospec=True) as logger, \
-         patch('arctic.scripts.utils.get_auth', side_effect=[None, user_creds],
+    with patch('giantarctic.scripts.utils.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.utils.get_auth', side_effect=[None, user_creds],
               autospec=True) as get_auth:
         connection['arctic_user'].authenticate.return_value = False
         assert not do_db_auth('hostname', connection, 'arctic_user')
@@ -57,8 +57,8 @@ def test_do_db_auth_no_user_creds():
 
 def test_do_db_auth_no_admin_user_creds_fails():
     connection = MagicMock()
-    with patch('arctic.scripts.utils.logger', autospec=True) as logger, \
-         patch('arctic.scripts.utils.get_auth', side_effect=[None, None],
+    with patch('giantarctic.scripts.utils.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.utils.get_auth', side_effect=[None, None],
               autospec=True) as get_auth:
         connection.admin.authenticate.return_value = False
         assert not do_db_auth('hostname', connection, 'arctic_user')
@@ -71,8 +71,8 @@ def test_do_db_auth_no_admin_user_creds_fails():
 
 def test_do_db_auth_admin_user_creds_fails():
     connection = MagicMock()
-    with patch('arctic.scripts.utils.logger', autospec=True) as logger, \
-         patch('arctic.scripts.utils.get_auth', side_effect=[Mock(), None],
+    with patch('giantarctic.scripts.utils.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.utils.get_auth', side_effect=[Mock(), None],
               autospec=True) as get_auth:
         connection.admin.authenticate.return_value = False
         assert not do_db_auth('hostname', connection, 'arctic_user')
@@ -87,8 +87,8 @@ def test_do_db_auth_role():
     admin_creds = Mock()
     user_creds = Mock()
     connection = MagicMock()
-    with patch('arctic.scripts.utils.logger', autospec=True) as logger, \
-        patch('arctic.scripts.utils.get_auth', autospec=True, side_effect=[admin_creds, user_creds]) as get_auth:
+    with patch('giantarctic.scripts.utils.logger', autospec=True) as logger, \
+        patch('giantarctic.scripts.utils.get_auth', autospec=True, side_effect=[admin_creds, user_creds]) as get_auth:
         assert do_db_auth('hostname', connection, 'arctic_user')
 
     assert get_auth.call_args_list == [call('hostname', 'admin', 'admin'),

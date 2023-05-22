@@ -9,10 +9,10 @@ import pytz
 from mock import patch
 from pandas.util.testing import assert_frame_equal
 
-from arctic.date._mktz import mktz
+from giantarctic.date._mktz import mktz
 from tests.util import read_str_as_pandas, multi_index_df_from_arrs
 
-pytest_plugins = ['arctic.fixtures.arctic']
+pytest_plugins = ['giantarctic.fixtures.arctic']
 
 
 ts1 = read_str_as_pandas("""           sample_dt | near
@@ -81,7 +81,7 @@ def test_existing_ts_update_existing_data_and_read(bitemporal_library):
 
 
 def test_read_ts_with_historical_update(bitemporal_library):
-    with patch('arctic.store.bitemporal_store.dt') as mock_dt:
+    with patch('giantarctic.store.bitemporal_store.dt') as mock_dt:
         mock_dt.now.return_value = dt(2015, 5, 1)
         mock_dt.side_effect = lambda *args, **kwargs: dt(*args, **kwargs)
         bitemporal_library.update('spam', ts1)
@@ -110,7 +110,7 @@ def test_read_ts_with_historical_update(bitemporal_library):
 
 
 def test_read_ts_with_historical_update_and_new_row(bitemporal_library):
-    with patch('arctic.store.bitemporal_store.dt') as mock_dt:
+    with patch('giantarctic.store.bitemporal_store.dt') as mock_dt:
         mock_dt.now.return_value = dt(2015, 5, 1)
         mock_dt.side_effect = lambda *args, **kwargs: dt(*args, **kwargs)
         bitemporal_library.update('spam', ts1)

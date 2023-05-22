@@ -10,7 +10,7 @@ from pandas import DataFrame, DatetimeIndex
 from pandas.util.testing import assert_frame_equal
 from tests.util import assert_frame_equal_
 
-from arctic.date import DateRange, CLOSED_OPEN, CLOSED_CLOSED, OPEN_OPEN, OPEN_CLOSED
+from giantarctic.date import DateRange, CLOSED_OPEN, CLOSED_CLOSED, OPEN_OPEN, OPEN_CLOSED
 
 
 if int(pd.__version__.split('.')[1]) > 22:

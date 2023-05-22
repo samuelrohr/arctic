@@ -3,7 +3,7 @@ import string
 
 import pytest
 
-import arctic._compression as c
+import giantarctic._compression as c
 
 
 @pytest.mark.parametrize("compress",

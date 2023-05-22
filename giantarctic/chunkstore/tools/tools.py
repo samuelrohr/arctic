@@ -2,7 +2,7 @@ from itertools import groupby
 
 import pymongo
 
-from arctic.chunkstore.chunkstore import SYMBOL, SEGMENT, START
+from giantarctic.chunkstore.chunkstore import SYMBOL, SEGMENT, START
 
 
 def segment_id_repair(library, symbol=None):

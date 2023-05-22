@@ -5,8 +5,8 @@ from mock import patch, Mock, call
 from pymongo.errors import OperationFailure
 from pymongo.read_preferences import Primary
 
-from arctic.hooks import get_mongodb_uri
-from arctic.scripts import arctic_enable_sharding as mes
+from giantarctic.hooks import get_mongodb_uri
+from giantarctic.scripts import arctic_enable_sharding as mes
 from ...util import run_as_main
 
 

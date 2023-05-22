@@ -2,8 +2,8 @@ import pytest
 from mock import patch, sentinel, Mock, MagicMock
 from pymongo.errors import AutoReconnect, OperationFailure, DuplicateKeyError, ServerSelectionTimeoutError
 
-from arctic.decorators import mongo_retry, _get_host
-from arctic.hooks import register_log_exception_hook
+from giantarctic.decorators import mongo_retry, _get_host
+from giantarctic.hooks import register_log_exception_hook
 
 
 def test_mongo_retry():
@@ -12,7 +12,7 @@ def test_mongo_retry():
     self._arctic_lib.arctic.mongo_host = sentinel.host
     self._collection.database.client.nodes = set([('a', 12)])
     self._arctic_lib.get_name.return_value = sentinel.lib_name
-    with patch('arctic.decorators._handle_error', autospec=True) as he:
+    with patch('giantarctic.decorators._handle_error', autospec=True) as he:
         @mongo_retry
         def foo(self):
             if retries[0] == 2:
@@ -59,7 +59,7 @@ def test_mongo_retry_hook_changes():
 def test_mongo_retry_fails():
     error = OperationFailure('error')
     retries = [16]
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         @mongo_retry
         def foo():
             if retries[0]:
@@ -75,7 +75,7 @@ def test_mongo_retry_fails():
 
 def test_retry_nested():
     error = OperationFailure('error')
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         @mongo_retry
         def foo():
             @mongo_retry
@@ -93,10 +93,10 @@ def test_retry_nested():
 
 
 def test_all_other_exceptions_logged():
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         def foo():
             raise Exception("Unexpected Error")
-        foo.__module__ = 'arctic.foo'
+        foo.__module__ = 'giantarctic.foo'
         foo = mongo_retry(foo)
         with pytest.raises(Exception) as e:
             foo()
@@ -106,7 +106,7 @@ def test_all_other_exceptions_logged():
 
 
 def test_other_exceptions_not_logged_outside_of_arctic():
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         @mongo_retry
         def foo():
             raise Exception("Unexpected Error")
@@ -119,7 +119,7 @@ def test_other_exceptions_not_logged_outside_of_arctic():
 @pytest.mark.xfail(reason="CS-8393 Mongo server reports auth failure when servers flip")
 def test_auth_failure_no_retry():
     error = OperationFailure('unauthorized for db:arctic_jblackburn')
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         @mongo_retry
         def foo():
             raise error
@@ -131,7 +131,7 @@ def test_auth_failure_no_retry():
 
 def test_duplicate_key_failure_no_retry():
     error = DuplicateKeyError('duplicate key')
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         @mongo_retry
         def foo():
             raise error
@@ -143,7 +143,7 @@ def test_duplicate_key_failure_no_retry():
 
 def test_ServerSelectionTimeoutError_no_retry():
     error = ServerSelectionTimeoutError('some error')
-    with patch('arctic.decorators._log_exception', autospec=True) as le:
+    with patch('giantarctic.decorators._log_exception', autospec=True) as le:
         @mongo_retry
         def foo():
             raise error

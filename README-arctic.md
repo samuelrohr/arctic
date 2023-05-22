@@ -87,7 +87,7 @@ A library is mapped to a Python class.  All library databases in MongoDB are pre
 
 Arctic includes three storage engines:
 
-  * [VersionStore](arctic/store/version_store.py): a key-value versioned TimeSeries store. It supports:
+  * [VersionStore](giantarctic/store/version_store.py): a key-value versioned TimeSeries store. It supports:
       * Pandas data types (other Python types pickled)
       * Multiple versions of each data item. Can easily read previous versions.
       * Create point-in-time snapshots across symbols in a library
@@ -97,7 +97,7 @@ Arctic includes three storage engines:
       * a wide range of TimeSeries data frequencies: End-Of-Day to Minute bars
       * [See the HowTo](howtos/how_to_use_arctic.py)
       * [Documentation](docs/versionstore.md)
-  * [TickStore](arctic/tickstore/tickstore.py): Column oriented tick database.  Supports
+  * [TickStore](giantarctic/tickstore/tickstore.py): Column oriented tick database.  Supports
     dynamic fields, chunks aren't versioned. Designed for large continuously ticking data.
   * [Chunkstore](https://github.com/man-group/arctic/wiki/Chunkstore): A storage type that allows data to be stored in customizable chunk sizes. Chunks
     aren't versioned, and can be appended to and updated in place. 

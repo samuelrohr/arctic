@@ -1,13 +1,13 @@
 from mock import patch, sentinel, call
 
-from arctic.scripts.arctic_fsck import main
+from giantarctic.scripts.arctic_fsck import main
 from ...util import run_as_main
 
 
 def test_main():
-    with patch('arctic.scripts.arctic_fsck.Arctic') as Arctic, \
-         patch('arctic.scripts.arctic_fsck.get_mongodb_uri') as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_fsck.do_db_auth') as do_db_auth:
+    with patch('giantarctic.scripts.arctic_fsck.Arctic') as Arctic, \
+         patch('giantarctic.scripts.arctic_fsck.get_mongodb_uri') as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_fsck.do_db_auth') as do_db_auth:
         run_as_main(main, '--host', '%s:%s' % (sentinel.host, sentinel.port),
                           '-v', '--library', 'sentinel.library', 'lib2', '-f')
     get_mongodb_uri.assert_called_once_with('sentinel.host:sentinel.port')
@@ -23,9 +23,9 @@ def test_main():
 
 
 def test_main_dry_run():
-    with patch('arctic.scripts.arctic_fsck.Arctic') as Arctic, \
-         patch('arctic.scripts.arctic_fsck.get_mongodb_uri') as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_fsck.do_db_auth') as do_db_auth:
+    with patch('giantarctic.scripts.arctic_fsck.Arctic') as Arctic, \
+         patch('giantarctic.scripts.arctic_fsck.get_mongodb_uri') as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_fsck.do_db_auth') as do_db_auth:
         run_as_main(main, '--host', '%s:%s' % (sentinel.host, sentinel.port),
                     '-v', '--library', 'sentinel.library', 'sentinel.lib2')
     get_mongodb_uri.assert_called_once_with('sentinel.host:sentinel.port')

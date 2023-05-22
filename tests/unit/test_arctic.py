@@ -7,19 +7,19 @@ from mock import patch, MagicMock, sentinel, create_autospec, Mock, call
 from pymongo.errors import OperationFailure, AutoReconnect
 from pymongo.mongo_client import MongoClient
 
-from arctic.arctic import Arctic, ArcticLibraryBinding, \
+from giantarctic.arctic import Arctic, ArcticLibraryBinding, \
     register_library_type, LIBRARY_TYPES
-from arctic.auth import Credential
-from arctic.exceptions import LibraryNotFoundException, \
+from giantarctic.auth import Credential
+from giantarctic.exceptions import LibraryNotFoundException, \
     ArcticException, QuotaExceededException
-from arctic._cache import Cache
+from giantarctic._cache import Cache
 
 
 def test_arctic_lazy_init():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True) as mc, \
-        patch('arctic.arctic.mongo_retry', side_effect=lambda x: x, autospec=True), \
-        patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-        patch('arctic.arctic.get_auth', autospec=True) as ga:
+        patch('giantarctic.arctic.mongo_retry', side_effect=lambda x: x, autospec=True), \
+        patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+        patch('giantarctic.arctic.get_auth', autospec=True) as ga:
             store = Arctic('cluster')
             assert not mc.called
             # do something to trigger lazy arctic init
@@ -29,9 +29,9 @@ def test_arctic_lazy_init():
 
 def test_arctic_lazy_init_ssl_true():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True) as mc, \
-            patch('arctic.arctic.mongo_retry', side_effect=lambda x: x, autospec=True), \
-            patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-            patch('arctic.arctic.get_auth', autospec=True) as ga:
+            patch('giantarctic.arctic.mongo_retry', side_effect=lambda x: x, autospec=True), \
+            patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+            patch('giantarctic.arctic.get_auth', autospec=True) as ga:
         store = Arctic('cluster', ssl=True)
         assert not mc.called
         # do something to trigger lazy arctic init
@@ -48,10 +48,10 @@ def test_arctic_lazy_init_ssl_true():
 
 def test_connection_passed_warning_raised():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True), \
-         patch('arctic.arctic.mongo_retry', side_effect=lambda x: x, autospec=True), \
-         patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-         patch('arctic.arctic.get_auth', autospec=True), \
-         patch('arctic.arctic.logger') as lg:
+         patch('giantarctic.arctic.mongo_retry', side_effect=lambda x: x, autospec=True), \
+         patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+         patch('giantarctic.arctic.get_auth', autospec=True), \
+         patch('giantarctic.arctic.logger') as lg:
         magic_mock = MagicMock(nodes={("host", "port")})
         store = Arctic(magic_mock, ssl=True)
         # Increment _pid to simulate forking the process
@@ -63,9 +63,9 @@ def test_connection_passed_warning_raised():
 
 def test_arctic_auth():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True), \
-        patch('arctic.arctic.mongo_retry', autospec=True), \
-         patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-         patch('arctic.arctic.get_auth', autospec=True) as ga:
+        patch('giantarctic.arctic.mongo_retry', autospec=True), \
+         patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+         patch('giantarctic.arctic.get_auth', autospec=True) as ga:
             ga.return_value = Credential('db', 'admin_user', 'admin_pass')
             store = Arctic('cluster')
             # do something to trigger lazy arctic init
@@ -76,7 +76,7 @@ def test_arctic_auth():
 
             # Get a 'missing' library
             with pytest.raises(LibraryNotFoundException):
-                with patch('arctic.arctic.ArcticLibraryBinding.get_library_type', return_value=None, autospec=True):
+                with patch('giantarctic.arctic.ArcticLibraryBinding.get_library_type', return_value=None, autospec=True):
                     ga.return_value = Credential('db', 'user', 'pass')
                     store._conn['arctic_jblackburn'].name = 'arctic_jblackburn'
                     store['jblackburn.library']
@@ -88,9 +88,9 @@ def test_arctic_auth():
 
 def test_arctic_auth_custom_app_name():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True), \
-        patch('arctic.arctic.mongo_retry', autospec=True), \
-         patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-         patch('arctic.arctic.get_auth', autospec=True) as ga:
+        patch('giantarctic.arctic.mongo_retry', autospec=True), \
+         patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+         patch('giantarctic.arctic.get_auth', autospec=True) as ga:
             ga.return_value = Credential('db', 'admin_user', 'admin_pass')
             store = Arctic('cluster', app_name=sentinel.app_name)
             # do something to trigger lazy arctic init
@@ -100,7 +100,7 @@ def test_arctic_auth_custom_app_name():
 
             # Get a 'missing' library
             with pytest.raises(LibraryNotFoundException):
-                with patch('arctic.arctic.ArcticLibraryBinding.get_library_type', return_value=None, autospec=True):
+                with patch('giantarctic.arctic.ArcticLibraryBinding.get_library_type', return_value=None, autospec=True):
                     ga.return_value = Credential('db', 'user', 'pass')
                     store._conn['arctic_jblackburn'].name = 'arctic_jblackburn'
                     store['jblackburn.library']
@@ -111,9 +111,9 @@ def test_arctic_auth_custom_app_name():
 
 def test_arctic_connect_hostname():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True) as mc, \
-         patch('arctic.arctic.mongo_retry', autospec=True) as ar, \
-            patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-            patch('arctic.arctic.get_mongodb_uri', autospec=True) as gmu:
+         patch('giantarctic.arctic.mongo_retry', autospec=True) as ar, \
+            patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+            patch('giantarctic.arctic.get_mongodb_uri', autospec=True) as gmu:
                 store = Arctic('hostname', socketTimeoutMS=sentinel.socket_timeout,
                                          connectTimeoutMS=sentinel.connect_timeout,
                                          serverSelectionTimeoutMS=sentinel.select_timeout)
@@ -127,10 +127,10 @@ def test_arctic_connect_hostname():
 
 def test_arctic_connect_with_environment_name():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True) as mc, \
-         patch('arctic.arctic.mongo_retry', autospec=True) as ar, \
-         patch('arctic.arctic.get_auth', autospec=True), \
-         patch('arctic._cache.Cache._is_not_expired', return_value=True), \
-         patch('arctic.arctic.get_mongodb_uri') as gmfe:
+         patch('giantarctic.arctic.mongo_retry', autospec=True) as ar, \
+         patch('giantarctic.arctic.get_auth', autospec=True), \
+         patch('giantarctic._cache.Cache._is_not_expired', return_value=True), \
+         patch('giantarctic.arctic.get_mongodb_uri') as gmfe:
             store = Arctic('live', socketTimeoutMS=sentinel.socket_timeout,
                                  connectTimeoutMS=sentinel.connect_timeout,
                                  serverSelectionTimeoutMS=sentinel.select_timeout)
@@ -150,7 +150,7 @@ def test_arctic_connect_with_environment_name():
     ])
 def test_database_library_specifier(library, expected_library, expected_database):
     mongo = MagicMock()
-    with patch('arctic.arctic.ArcticLibraryBinding._auth'):
+    with patch('giantarctic.arctic.ArcticLibraryBinding._auth'):
         ml = ArcticLibraryBinding(mongo, library)
 
     assert ml.library == expected_library
@@ -159,8 +159,8 @@ def test_database_library_specifier(library, expected_library, expected_database
 
 def test_arctic_repr():
     with patch('pymongo.MongoClient', return_value=MagicMock(), autospec=True):
-        with patch('arctic.arctic.mongo_retry', autospec=True):
-            with patch('arctic.arctic.get_auth', autospec=True) as ga:
+        with patch('giantarctic.arctic.mongo_retry', autospec=True):
+            with patch('giantarctic.arctic.get_auth', autospec=True) as ga:
                 ga.return_value = Credential('db', 'admin_user', 'admin_pass')
                 store = Arctic('cluster')
                 assert str(store) == repr(store)
@@ -168,7 +168,7 @@ def test_arctic_repr():
 
 def test_lib_repr():
     mongo = MagicMock()
-    with patch('arctic.arctic.ArcticLibraryBinding._auth'):
+    with patch('giantarctic.arctic.ArcticLibraryBinding._auth'):
         ml = ArcticLibraryBinding(mongo, 'asdf')
         assert str(ml) == repr(ml)
 
@@ -245,7 +245,7 @@ def test_check_quota():
                                                                               'count': 100,
                                                                               }
                                                                              }))
-    with patch('arctic.arctic.logger.warning') as warn:
+    with patch('giantarctic.arctic.logger.warning') as warn:
         ArcticLibraryBinding.check_quota(self)
     self.arctic.__getitem__.assert_called_once_with(self.get_name.return_value)
     warn.assert_called_once_with('Mongo Quota: arctic_db.lib 0.879 / 1 GB used')
@@ -263,7 +263,7 @@ def test_check_quota_90_percent():
                                                                               'count': 1000000,
                                                                               }
                                                                              }))
-    with patch('arctic.arctic.logger.warning') as warn:
+    with patch('giantarctic.arctic.logger.warning') as warn:
         ArcticLibraryBinding.check_quota(self)
     self.arctic.__getitem__.assert_called_once_with(self.get_name.return_value)
     warn.assert_called_once_with('Mongo Quota: arctic_db.lib 0.910 / 1 GB used')
@@ -280,7 +280,7 @@ def test_check_quota_info():
                                                                               'count': 100,
                                                                               }
                                                                              }))
-    with patch('arctic.arctic.logger.info') as info:
+    with patch('giantarctic.arctic.logger.info') as info:
         ArcticLibraryBinding.check_quota(self)
     self.arctic.__getitem__.assert_called_once_with(self.get_name.return_value)
     info.assert_called_once_with('Mongo Quota: arctic_db.lib 0.001 / 1 GB used')
@@ -311,8 +311,8 @@ def test_initialize_library():
     lib.database_name = sentinel.db_name
     lib.get_quota.return_value = None
     lib_type = Mock()
-    with patch.dict('arctic.arctic.LIBRARY_TYPES', {sentinel.lib_type: lib_type}), \
-         patch('arctic.arctic.ArcticLibraryBinding', return_value=lib, autospec=True) as ML:
+    with patch.dict('giantarctic.arctic.LIBRARY_TYPES', {sentinel.lib_type: lib_type}), \
+         patch('giantarctic.arctic.ArcticLibraryBinding', return_value=lib, autospec=True) as ML:
         Arctic.initialize_library(self, sentinel.lib_name, sentinel.lib_type, thing=sentinel.thing)
     assert ML.call_args_list == [call(self, sentinel.lib_name)]
     assert ML.return_value.set_library_type.call_args_list == [call(sentinel.lib_type)]
@@ -329,8 +329,8 @@ def test_initialize_library_too_many_ns():
     self._conn.__getitem__.return_value.list_collection_names.return_value = [x for x in range(5001)]
     lib_type = Mock()
     with pytest.raises(ArcticException) as e:
-        with patch.dict('arctic.arctic.LIBRARY_TYPES', {sentinel.lib_type: lib_type}), \
-             patch('arctic.arctic.ArcticLibraryBinding', return_value=lib, autospec=True) as ML:
+        with patch.dict('giantarctic.arctic.LIBRARY_TYPES', {sentinel.lib_type: lib_type}), \
+             patch('giantarctic.arctic.ArcticLibraryBinding', return_value=lib, autospec=True) as ML:
             Arctic.initialize_library(self, sentinel.lib_name, sentinel.lib_type, thing=sentinel.thing)
     assert self._conn.__getitem__.call_args_list == [call(sentinel.db_name),
                                                      call(sentinel.db_name)]
@@ -347,8 +347,8 @@ def test_initialize_library_with_list_coll_names():
     lib.get_quota.return_value = None
     self._conn.__getitem__.return_value.list_collection_names.return_value = [x for x in range(5001)]
     lib_type = Mock()
-    with patch.dict('arctic.arctic.LIBRARY_TYPES', {sentinel.lib_type: lib_type}), \
-         patch('arctic.arctic.ArcticLibraryBinding', return_value=lib, autospec=True) as ML:
+    with patch.dict('giantarctic.arctic.LIBRARY_TYPES', {sentinel.lib_type: lib_type}), \
+         patch('giantarctic.arctic.ArcticLibraryBinding', return_value=lib, autospec=True) as ML:
         Arctic.initialize_library(self, sentinel.lib_name, sentinel.lib_type, thing=sentinel.thing, check_library_count=False)
     assert ML.call_args_list == [call(self, sentinel.lib_name)]
     assert ML.return_value.set_library_type.call_args_list == [call(sentinel.lib_type)]
@@ -373,7 +373,7 @@ def test_get_library():
     self._library_cache = {}
     library_type = Mock()
     register_library_type(sentinel.lib_type, library_type)
-    with patch('arctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
+    with patch('giantarctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
         ML.return_value.get_library_type.return_value = sentinel.lib_type
         library = Arctic.get_library(self, sentinel.lib_name)
     del LIBRARY_TYPES[sentinel.lib_type]
@@ -387,7 +387,7 @@ def test_get_library_not_initialized():
                            mongo_host=sentinel.host)
     self._library_cache = {}
     with pytest.raises(LibraryNotFoundException) as e, \
-         patch('arctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
+         patch('giantarctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
         ML.return_value.get_library_type.return_value = None
         Arctic.get_library(self, sentinel.lib_name)
     assert "Library %s was not correctly initialized in %s." % (sentinel.lib_name, self) in str(e.value)
@@ -397,7 +397,7 @@ def test_get_library_auth_issue():
     self = create_autospec(Arctic, mongo_host=sentinel.host)
     self._library_cache = {}
     with pytest.raises(LibraryNotFoundException) as e, \
-         patch('arctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
+         patch('giantarctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
         ML.return_value.get_library_type.side_effect = OperationFailure('database error: not authorized for query on arctic_marketdata.index.ARCTIC')
         Arctic.get_library(self, sentinel.lib_name)
     assert "Library %s was not correctly initialized in %s." % (sentinel.lib_name, self) in str(e.value)
@@ -407,7 +407,7 @@ def test_get_library_not_registered():
     self = create_autospec(Arctic)
     self._library_cache = {}
     with pytest.raises(LibraryNotFoundException) as e, \
-         patch('arctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
+         patch('giantarctic.arctic.ArcticLibraryBinding', autospec=True) as ML:
         ML.return_value.get_library_type.return_value = sentinel.lib_type
         Arctic.get_library(self, sentinel.lib_name)
     assert ("Couldn't load LibraryType '%s' for '%s' (has the class been registered?)" %
@@ -417,14 +417,14 @@ def test_get_library_not_registered():
 
 def test_mongo_host_get_set():
     sentinel.mongo_host = Mock(nodes={("host", "port")})
-    with patch('arctic._cache.Cache.__init__', autospec=True, return_value=None):
+    with patch('giantarctic._cache.Cache.__init__', autospec=True, return_value=None):
         arctic = Arctic(sentinel.mongo_host)
         assert arctic.mongo_host == "host:port"
 
 
 def test_arctic_set_get_state():
     sentinel.mongo_host = Mock(nodes={("host", "port")})
-    with patch('arctic._cache.Cache.__init__', autospec=True, return_value=None):
+    with patch('giantarctic._cache.Cache.__init__', autospec=True, return_value=None):
         store = Arctic(sentinel.mongo_host, allow_secondary="allow_secondary", app_name="app_name",
                        socketTimeoutMS=1234, connectTimeoutMS=2345, serverSelectionTimeoutMS=3456)
         buff = pickle.dumps(store)
@@ -448,10 +448,10 @@ def test__conn_auth_issue():
             auth_timeout[0] = 1
             raise AutoReconnect()
 
-    with patch('arctic.arctic.authenticate', flaky_auth), \
-    patch('arctic.arctic.get_auth', return_value=sentinel.creds), \
-    patch('arctic._cache.Cache.__init__', autospec=True, return_value=None), \
-    patch('arctic.decorators._handle_error') as he:
+    with patch('giantarctic.arctic.authenticate', flaky_auth), \
+    patch('giantarctic.arctic.get_auth', return_value=sentinel.creds), \
+    patch('giantarctic._cache.Cache.__init__', autospec=True, return_value=None), \
+    patch('giantarctic.decorators._handle_error') as he:
         a._conn
         assert he.call_count == 1
         assert auth_timeout[0]
@@ -460,7 +460,7 @@ def test__conn_auth_issue():
 def test_reset():
     c = MagicMock()
     with patch('pymongo.MongoClient', return_value=c, autospec=True) as mc, \
-            patch('arctic._cache.Cache._is_not_expired', return_value=True):
+            patch('giantarctic._cache.Cache._is_not_expired', return_value=True):
                 store = Arctic('hostname')
                 # do something to trigger lazy arctic init
                 store.list_libraries()

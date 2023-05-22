@@ -1,8 +1,8 @@
 from mock import MagicMock, ANY, patch
 
-from arctic._util import are_equals, enable_sharding, mongo_count
-from arctic.arctic import Arctic
-import arctic._util
+from giantarctic._util import are_equals, enable_sharding, mongo_count
+from giantarctic.arctic import Arctic
+import giantarctic._util
 
 
 def test_are_equals_not_df():
@@ -18,7 +18,7 @@ def test_enable_sharding_hashed():
 
 
 def test_mongo_count_old_pymongo(monkeypatch):
-    monkeypatch.setattr(arctic._util, '_use_new_count_api', None)
+    monkeypatch.setattr(giantarctic._util, '_use_new_count_api', None)
     with patch('pymongo.version', '3.6.0'):
         coll = MagicMock()
         mongo_count(coll, filter="_id:1")
@@ -30,7 +30,7 @@ def test_mongo_count_old_pymongo(monkeypatch):
 
 
 def test_mongo_count_new_pymongo(monkeypatch):
-    monkeypatch.setattr(arctic._util, '_use_new_count_api', None)
+    monkeypatch.setattr(giantarctic._util, '_use_new_count_api', None)
     with patch('pymongo.version', '3.11.0'):
         coll2 = MagicMock()
         mongo_count(coll2, filter="_id:1")

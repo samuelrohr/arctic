@@ -34,7 +34,7 @@ Head over to the FAQs and James's presentation given below for more details.
 
 ## Basic Operations
 
-Arctic provides a [wrapper](../arctic/arctic.py) for handling connections to Mongo. The `Arctic` class is what actually connects to Arctic.
+Arctic provides a [wrapper](../giantarctic/arctic.py) for handling connections to Mongo. The `Arctic` class is what actually connects to Arctic.
 
 ```
 >>> conn = Arctic('127.0.0.1')

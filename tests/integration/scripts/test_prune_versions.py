@@ -2,14 +2,14 @@ import time
 
 from mock import patch, ANY, call
 
-from arctic.auth import Credential
-from arctic.scripts import arctic_prune_versions as mpv
+from giantarctic.auth import Credential
+from giantarctic.scripts import arctic_prune_versions as mpv
 from ...util import run_as_main
 
 
 def test_prune_versions_symbol(mongo_host, library, library_name):
-    with patch('arctic.scripts.arctic_prune_versions.prune_versions', autospec=True) as prune_versions, \
-            patch('arctic.scripts.utils.get_auth', return_value=Credential('admin', 'adminuser', 'adminpwd')), \
+    with patch('giantarctic.scripts.arctic_prune_versions.prune_versions', autospec=True) as prune_versions, \
+            patch('giantarctic.scripts.utils.get_auth', return_value=Credential('admin', 'adminuser', 'adminpwd')), \
             patch('pymongo.database.Database.authenticate', return_value=True):
 
         run_as_main(mpv.main, '--host', mongo_host, '--library', library_name, '--symbols', 'sym1,sym2')
@@ -17,7 +17,7 @@ def test_prune_versions_symbol(mongo_host, library, library_name):
 
 
 def test_prune_versions_full(mongo_host, library, library_name):
-    with patch('arctic.scripts.arctic_prune_versions.do_db_auth', return_value=True):
+    with patch('giantarctic.scripts.arctic_prune_versions.do_db_auth', return_value=True):
         # Write some stuff with snapshots
         library.snapshot('snap')
         library.write('symbol', "val1")

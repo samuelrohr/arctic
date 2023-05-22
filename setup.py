@@ -47,7 +47,7 @@ class PyTest(TestCommand):
         import pytest
 
         args = [self.pytest_args] if isinstance(self.pytest_args, str) else list(self.pytest_args)
-        args.extend(['--cov', 'arctic',
+        args.extend(['--cov', 'giantarctic',
                      '--cov-report', 'xml',
                      '--cov-report', 'html',
                      '--junitxml', 'test-results/junit.xml',
@@ -97,14 +97,14 @@ setup(
                    "tzlocal<=1.4; python_version<='3.6'",
                    ],
     entry_points={'console_scripts': [
-                                        'arctic_init_library = arctic.scripts.arctic_init_library:main',
-                                        'arctic_list_libraries = arctic.scripts.arctic_list_libraries:main',
-                                        'arctic_delete_library = arctic.scripts.arctic_delete_library:main',
-                                        'arctic_enable_sharding = arctic.scripts.arctic_enable_sharding:main',
-                                        'arctic_copy_data = arctic.scripts.arctic_copy_data:main',
-                                        'arctic_create_user = arctic.scripts.arctic_create_user:main',
-                                        'arctic_prune_versions = arctic.scripts.arctic_prune_versions:main',
-                                        'arctic_fsck = arctic.scripts.arctic_fsck:main',
+                                        'arctic_init_library = giantarctic.scripts.arctic_init_library:main',
+                                        'arctic_list_libraries = giantarctic.scripts.arctic_list_libraries:main',
+                                        'arctic_delete_library = giantarctic.scripts.arctic_delete_library:main',
+                                        'arctic_enable_sharding = giantarctic.scripts.arctic_enable_sharding:main',
+                                        'arctic_copy_data = giantarctic.scripts.arctic_copy_data:main',
+                                        'arctic_create_user = giantarctic.scripts.arctic_create_user:main',
+                                        'arctic_prune_versions = giantarctic.scripts.arctic_prune_versions:main',
+                                        'arctic_fsck = giantarctic.scripts.arctic_fsck:main',
                                         ]
                   },
     classifiers=[

@@ -10,16 +10,16 @@ from pymongo import ReadPreference
 from pymongo.collection import Collection
 from pymongo.errors import OperationFailure, DuplicateKeyError
 
-from arctic.arctic import ArcticLibraryBinding, Arctic
-from arctic.date import mktz
-from arctic.exceptions import DuplicateSnapshotException, NoDataFoundException
-from arctic.store import version_store
-from arctic.store.version_store import VersionStore, VersionedItem
+from giantarctic.arctic import ArcticLibraryBinding, Arctic
+from giantarctic.date import mktz
+from giantarctic.exceptions import DuplicateSnapshotException, NoDataFoundException
+from giantarctic.store import version_store
+from giantarctic.store.version_store import VersionStore, VersionedItem
 
 
 def test_delete_version_version_not_found():
-    with patch('arctic.store.version_store.VersionStore.__init__', return_value=None, autospec=True):
-        with patch('arctic.store.version_store.logger') as logger:
+    with patch('giantarctic.store.version_store.VersionStore.__init__', return_value=None, autospec=True):
+        with patch('giantarctic.store.version_store.logger') as logger:
             vs = version_store.VersionStore(sentinel.connection)
             vs._versions = MagicMock()
             with patch.object(vs._versions, 'find_one', return_value=None, autospec=True):
@@ -169,7 +169,7 @@ def test_write_check_quota():
 def test_initialize_library():
     arctic_lib = create_autospec(ArcticLibraryBinding)
     arctic_lib.arctic = create_autospec(Arctic, _allow_secondary=False)
-    with patch('arctic.store.version_store.enable_sharding', autospec=True) as enable_sharding:
+    with patch('giantarctic.store.version_store.enable_sharding', autospec=True) as enable_sharding:
         arctic_lib.get_top_level_collection.return_value.database.create_collection.__name__ = 'some_name'
         arctic_lib.get_top_level_collection.return_value.database.collection_names.__name__ = 'some_name'
         arctic_lib.get_top_level_collection.__name__ = 'get_top_level_collection'
@@ -181,7 +181,7 @@ def test_initialize_library():
 def test_ensure_index():
     th = Mock()
     vs = create_autospec(VersionStore, _collection=Mock())
-    with patch('arctic.store.version_store._TYPE_HANDLERS', [th]):
+    with patch('giantarctic.store.version_store._TYPE_HANDLERS', [th]):
         VersionStore._ensure_index(vs)
     assert vs._collection.snapshots.create_index.call_args_list == [call([('name', 1)], unique=True, background=True)]
     assert vs._collection.versions.create_index.call_args_list == [
@@ -200,7 +200,7 @@ def test_prune_previous_versions_0_timeout():
     self._versions = create_autospec(Collection)
     self._versions.with_options.return_value.find.__name__ = 'find'
     self._versions.with_options.return_value.find.return_value = []
-    with patch('arctic.store.version_store.dt') as dt:
+    with patch('giantarctic.store.version_store.dt') as dt:
         dt.utcnow.return_value = datetime.datetime(2013, 10, 1)
         VersionStore._find_prunable_version_ids(self, sentinel.symbol, keep_mins=0)
     assert self._versions.with_options.call_args_list == [call(read_preference=ReadPreference.PRIMARY)]
@@ -247,7 +247,7 @@ def test_read_reports_random_errors():
     self._do_read.__name__ = 'name'  # feh: mongo_retry decorator cares about this
     self._do_read.side_effect = Exception('bad')
     with pytest.raises(Exception) as e:
-        with patch('arctic.store.version_store.log_exception') as le:
+        with patch('giantarctic.store.version_store.log_exception') as le:
             VersionStore.read(self, sentinel.symbol, sentinel.as_of, sentinel.from_version)
     assert 'bad' in str(e.value)
     assert le.call_count == 1
@@ -357,8 +357,8 @@ def test_write_metadata_with_previous_data():
                                      metadata=META_TO_WRITE,
                                      data=None)
 
-    with patch('arctic.store.version_store.bson.ObjectId') as mock_objId,\
-            patch('arctic.store.version_store.mongo_retry') as mock_retry:
+    with patch('giantarctic.store.version_store.bson.ObjectId') as mock_objId,\
+            patch('giantarctic.store.version_store.mongo_retry') as mock_retry:
         mock_objId.return_value = MOCK_OBJID
         mock_retry.side_effect = lambda f: f
         assert expected_ret_val == VersionStore.write_metadata(vs, symbol=TEST_SYMBOL, metadata=META_TO_WRITE)
@@ -382,8 +382,8 @@ def test_write_empty_metadata():
                                      metadata=None,
                                      data=None)
 
-    with patch('arctic.store.version_store.bson.ObjectId') as mock_objId, \
-            patch('arctic.store.version_store.mongo_retry') as mock_retry:
+    with patch('giantarctic.store.version_store.bson.ObjectId') as mock_objId, \
+            patch('giantarctic.store.version_store.mongo_retry') as mock_retry:
         mock_objId.return_value = MOCK_OBJID
         mock_retry.side_effect = lambda f: f
         assert expected_ret_val == VersionStore.write_metadata(vs, symbol=TEST_SYMBOL, metadata=None)
@@ -426,8 +426,8 @@ def test_restore_version():
     vs.read.return_value = last_item
     vs._read_metadata.side_effect = [TPL_VERSION, LASTEST_VERSION]
 
-    with patch('arctic.store.version_store.bson.ObjectId') as mock_objId, \
-            patch('arctic.store.version_store.mongo_retry') as mock_retry:
+    with patch('giantarctic.store.version_store.bson.ObjectId') as mock_objId, \
+            patch('giantarctic.store.version_store.mongo_retry') as mock_retry:
         mock_objId.return_value = MOCK_OBJID
         mock_retry.side_effect = lambda f: f
         ret_item = VersionStore.restore_version(vs, symbol=TEST_SYMBOL, as_of=LASTEST_VERSION['version'], prune_previous_version=True)
@@ -441,7 +441,7 @@ def test_restore_version():
 def test_restore_version_data_missing_symbol():
     vs = _create_mock_versionstore()
     vs._read_metadata.side_effect = NoDataFoundException("no data")
-    with patch('arctic.store.version_store.mongo_retry') as mock_retry:
+    with patch('giantarctic.store.version_store.mongo_retry') as mock_retry:
         mock_retry.side_effect = lambda f: f
         with pytest.raises(NoDataFoundException):
             VersionStore.restore_version(vs, symbol=TEST_SYMBOL,
@@ -456,8 +456,8 @@ def test_restore_last_version():
 
     vs._read_metadata.side_effect = [TPL_VERSION, TPL_VERSION]
 
-    with patch('arctic.store.version_store.bson.ObjectId') as mock_objId, \
-            patch('arctic.store.version_store.mongo_retry') as mock_retry:
+    with patch('giantarctic.store.version_store.bson.ObjectId') as mock_objId, \
+            patch('giantarctic.store.version_store.mongo_retry') as mock_retry:
         mock_objId.return_value = MOCK_OBJID
         mock_retry.side_effect = lambda f: f
 

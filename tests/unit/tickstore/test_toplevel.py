@@ -11,11 +11,11 @@ from dateutil.rrule import rrule, DAILY
 from mockextras import when
 from pandas.util.testing import assert_frame_equal
 
-from arctic.date import DateRange, mktz
-from arctic.exceptions import OverlappingDataException
-from arctic.exceptions import UnhandledDtypeException
-from arctic.tickstore.tickstore import TickStore
-from arctic.tickstore.toplevel import TopLevelTickStore, TickStoreLibrary
+from giantarctic.date import DateRange, mktz
+from giantarctic.exceptions import OverlappingDataException
+from giantarctic.exceptions import UnhandledDtypeException
+from giantarctic.tickstore.tickstore import TickStore
+from giantarctic.tickstore.toplevel import TopLevelTickStore, TickStoreLibrary
 
 utc = mktz('UTC')
 
@@ -55,7 +55,7 @@ def test_raise_exception_and_log_an_error_if_an_invalid_library_name_is_added():
     arctic_lib = MagicMock()
     arctic_lib.arctic.__getitem__.side_effect = Exception()
     store = TopLevelTickStore(arctic_lib)
-    with patch("arctic.tickstore.toplevel.logger") as mock_logger:
+    with patch("giantarctic.tickstore.toplevel.logger") as mock_logger:
         with pytest.raises(Exception):
             store.add(None, "blah")
     mock_logger.error.assert_called_once_with("Could not load library")
@@ -150,7 +150,7 @@ def test_write_pandas_data_to_right_libraries():
     mock_lib2 = Mock()
     when(self._arctic_lib.arctic.__getitem__).called_with(sentinel.libname1).then(mock_lib1)
     when(self._arctic_lib.arctic.__getitem__).called_with(sentinel.libname2).then(mock_lib2)
-    with patch("arctic.tickstore.toplevel.to_dt") as patch_to_dt:
+    with patch("giantarctic.tickstore.toplevel.to_dt") as patch_to_dt:
         patch_to_dt.side_effect = [sentinel.st1, sentinel.end1, sentinel.st2, sentinel.end2]
         TopLevelTickStore.write(self, 'blah', sentinel.data)
     mock_lib1.write.assert_called_once_with('blah', slice1)

@@ -1,15 +1,15 @@
 from mock import sentinel, create_autospec, patch, call, Mock
 from pymongo.collection import Collection
 
-from arctic import Arctic
-from arctic.arctic import ArcticLibraryBinding
-from arctic.store.bson_store import BSONStore
+from giantarctic import Arctic
+from giantarctic.arctic import ArcticLibraryBinding
+from giantarctic.store.bson_store import BSONStore
 
 
 def test_enable_sharding():
     arctic_lib = create_autospec(ArcticLibraryBinding)
     arctic_lib.arctic = create_autospec(Arctic)
-    with patch('arctic.store.bson_store.enable_sharding', autospec=True) as enable_sharding:
+    with patch('giantarctic.store.bson_store.enable_sharding', autospec=True) as enable_sharding:
         arctic_lib.get_top_level_collection.return_value.database.create_collection.__name__ = 'some_name'
         arctic_lib.get_top_level_collection.return_value.database.collection_names.__name__ = 'some_name'
         bsons = BSONStore(arctic_lib)

@@ -4,7 +4,7 @@ from datetime import datetime as dt
 
 import pytest
 
-from arctic.date import DateRange, string_to_daterange, CLOSED_CLOSED, CLOSED_OPEN, OPEN_CLOSED, OPEN_OPEN
+from giantarctic.date import DateRange, string_to_daterange, CLOSED_CLOSED, CLOSED_OPEN, OPEN_CLOSED, OPEN_OPEN
 
 test_ranges_for_bounding = {
     "unbounded":         (DateRange(),

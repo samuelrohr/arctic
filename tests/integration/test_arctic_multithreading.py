@@ -5,10 +5,10 @@ from random import random
 
 import pytest
 
-from arctic import Arctic, VERSION_STORE
-from arctic.exceptions import LibraryNotFoundException
-from arctic.hooks import register_get_auth_hook
-from arctic.store.version_store import VersionStore
+from giantarctic import Arctic, VERSION_STORE
+from giantarctic.exceptions import LibraryNotFoundException
+from giantarctic.hooks import register_get_auth_hook
+from giantarctic.store.version_store import VersionStore
 
 MY_ARCTIC = None  # module-level Arctic singleton
 AUTH_COUNT = 0

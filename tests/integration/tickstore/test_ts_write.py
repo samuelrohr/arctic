@@ -5,8 +5,8 @@ import pytz
 from pandas.util.testing import assert_frame_equal
 from tests.util import assert_frame_equal_
 
-from arctic.date import mktz, DateRange
-from arctic.exceptions import OverlappingDataException
+from giantarctic.date import mktz, DateRange
+from giantarctic.exceptions import OverlappingDataException
 
 DUMMY_DATA = [
               {'a': 1.,

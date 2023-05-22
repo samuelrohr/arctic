@@ -5,8 +5,8 @@ from threading import RLock, Event
 
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED, FIRST_EXCEPTION
 
-from arctic._config import ARCTIC_ASYNC_NWORKERS
-from arctic.exceptions import AsyncArcticException
+from giantarctic._config import ARCTIC_ASYNC_NWORKERS
+from giantarctic.exceptions import AsyncArcticException
 
 ABC = abc.ABCMeta('ABC', (object,), {})
 

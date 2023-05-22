@@ -5,8 +5,8 @@ from pymongo.collection import Collection
 from pymongo.results import UpdateResult
 from pytest import raises
 
-from arctic.exceptions import DataIntegrityException
-from arctic.store._ndarray_store import NdarrayStore, _promote_struct_dtypes
+from giantarctic.exceptions import DataIntegrityException
+from giantarctic.store._ndarray_store import NdarrayStore, _promote_struct_dtypes
 
 
 def test_dtype_parsing():

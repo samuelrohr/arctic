@@ -1,6 +1,6 @@
 import pandas as pd
 
-from arctic.store.versioned_item import VersionedItem
+from giantarctic.store.versioned_item import VersionedItem
 
 
 def test_versioned_item_str():

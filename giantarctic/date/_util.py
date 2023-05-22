@@ -47,7 +47,7 @@ def string_to_daterange(str_range, delimiter='-', as_dates=False, interval=CLOSE
 
     Examples
     --------
-    >>> from arctic.date import string_to_daterange
+    >>> from giantarctic.date import string_to_daterange
     >>> string_to_daterange('20111020', as_dates=True)
     DateRange(start=datetime.date(2011, 10, 20), end=datetime.date(2011, 10, 21))
 

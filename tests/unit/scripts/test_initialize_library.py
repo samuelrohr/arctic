@@ -1,18 +1,18 @@
 import pytest
 from mock import patch
 
-from arctic.scripts import arctic_init_library as mil
-from arctic.scripts.arctic_init_library import Arctic as ar
+from giantarctic.scripts import arctic_init_library as mil
+from giantarctic.scripts.arctic_init_library import Arctic as ar
 from ...util import run_as_main
 
 
 def test_init_library():
     # Create the user agains the current mongo database
     with patch('pymongo.MongoClient') as MongoClient, \
-         patch('arctic.scripts.arctic_init_library.logger', autospec=True) as logger, \
-         patch('arctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
-         patch('arctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_init_library.do_db_auth', autospec=True) as do_db_auth:
+         patch('giantarctic.scripts.arctic_init_library.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
+         patch('giantarctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_init_library.do_db_auth', autospec=True) as do_db_auth:
         run_as_main(mil.main, '--host', 'hostname', '--library', 'arctic_user.library', '--type', 'VersionStore')
 
     get_mongodb_uri.assert_called_once_with('hostname')
@@ -26,10 +26,10 @@ def test_init_library():
 def test_init_library_no_admin():
     # Create the user agains the current mongo database
     with patch('pymongo.MongoClient') as MongoClient, \
-         patch('arctic.scripts.arctic_init_library.logger', autospec=True), \
-         patch('arctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
-         patch('arctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_init_library.do_db_auth', autospec=True) as do_db_auth:
+         patch('giantarctic.scripts.arctic_init_library.logger', autospec=True), \
+         patch('giantarctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
+         patch('giantarctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_init_library.do_db_auth', autospec=True) as do_db_auth:
         run_as_main(mil.main, '--host', 'hostname', '--library', 'arctic_user.library', '--type', 'VersionStore')
 
     get_mongodb_uri.assert_called_once_with('hostname')
@@ -41,10 +41,10 @@ def test_init_library_no_admin():
 def test_init_library_hashed():
     # Create the user agains the current mongo database
     with patch('pymongo.MongoClient') as MongoClient, \
-         patch('arctic.scripts.arctic_init_library.logger', autospec=True) as logger, \
-         patch('arctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
-         patch('arctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_init_library.do_db_auth', autospec=True) as do_db_auth:
+         patch('giantarctic.scripts.arctic_init_library.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
+         patch('giantarctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_init_library.do_db_auth', autospec=True) as do_db_auth:
         run_as_main(mil.main, '--host', 'hostname', '--library', 'arctic_user.library', '--type', 'VersionStore', '--hashed')
 
     get_mongodb_uri.assert_called_once_with('hostname')
@@ -57,10 +57,10 @@ def test_init_library_hashed():
 
 def test_init_library_no_admin_no_user_creds():
     with patch('pymongo.MongoClient') as MongoClient, \
-         patch('arctic.scripts.arctic_init_library.logger', autospec=True) as logger, \
-         patch('arctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
-         patch('arctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
-         patch('arctic.scripts.arctic_init_library.do_db_auth', return_value=False, autospec=True) as do_db_auth:
+         patch('giantarctic.scripts.arctic_init_library.logger', autospec=True) as logger, \
+         patch('giantarctic.scripts.arctic_init_library.Arctic', spec=ar) as Arctic, \
+         patch('giantarctic.scripts.arctic_init_library.get_mongodb_uri', autospec=True) as get_mongodb_uri, \
+         patch('giantarctic.scripts.arctic_init_library.do_db_auth', return_value=False, autospec=True) as do_db_auth:
 
         MongoClient.return_value['arctic_user'].authenticate.return_value = False
         run_as_main(mil.main, '--host', 'hostname', '--library', 'arctic_user.library', '--type', 'VersionStore')

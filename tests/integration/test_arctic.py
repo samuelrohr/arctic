@@ -6,8 +6,8 @@ from mock import patch, MagicMock
 from pandas.util.testing import assert_frame_equal
 from pymongo.errors import OperationFailure
 
-from arctic.arctic import Arctic, VERSION_STORE
-from arctic.exceptions import LibraryNotFoundException, QuotaExceededException
+from giantarctic.arctic import Arctic, VERSION_STORE
+from giantarctic.exceptions import LibraryNotFoundException, QuotaExceededException
 from ..util import get_large_ts
 
 
@@ -38,8 +38,8 @@ def test_reset_Arctic(mongo_host, library_name):
 def test_re_authenticate_on_arctic_reset(mongo_host, library_name):
     from collections import namedtuple
     Cred = namedtuple('Cred', 'user, password')
-    with patch('arctic.arctic.authenticate') as auth_mock, \
-            patch('arctic.arctic.get_auth') as get_auth_mock:
+    with patch('giantarctic.arctic.authenticate') as auth_mock, \
+            patch('giantarctic.arctic.get_auth') as get_auth_mock:
         auth_mock.return_value = True
         get_auth_mock.return_value = Cred(user='a_username', password='a_passwd')
         arctic = Arctic(mongo_host=mongo_host)
@@ -190,7 +190,7 @@ def test_quota(arctic, library, library_name):
 
 
 def test_check_quota(arctic, library, library_name):
-    with patch('arctic.arctic.logger.info') as info:
+    with patch('giantarctic.arctic.logger.info') as info:
         arctic.check_quota(library_name)
     assert info.call_count == 1
 
@@ -247,7 +247,7 @@ def test_library_exists(arctic):
 
 def test_library_exists_no_auth(arctic):
     arctic.initialize_library('test')
-    with patch('arctic.arctic.ArcticLibraryBinding') as AB:
+    with patch('giantarctic.arctic.ArcticLibraryBinding') as AB:
         AB.return_value = MagicMock(
             get_library_type=MagicMock(side_effect=OperationFailure("not authorized on arctic to execute command")))
         assert arctic.library_exists('test')
@@ -265,7 +265,7 @@ def test_list_libraries_cached(arctic):
     assert sorted(libs) == sorted(arctic.list_libraries()) == sorted(arctic._list_libraries())
 
     # Should default to uncached list_libraries if cache is empty.
-    with patch('arctic.arctic.Arctic._list_libraries', return_value=libs) as uncached_list_libraries:
+    with patch('giantarctic.arctic.Arctic._list_libraries', return_value=libs) as uncached_list_libraries:
         # Empty cache manually.
         arctic._conn.meta_db.cache.remove({})
         assert arctic._list_libraries_cached() == libs
@@ -276,7 +276,7 @@ def test_list_libraries_cached(arctic):
     assert sorted(arctic._cache.get('list_libraries')) == sorted(libs)
 
     # Should fetch it from cache the second time.
-    with patch('arctic.arctic.Arctic._list_libraries', return_value=libs) as uncached_list_libraries:
+    with patch('giantarctic.arctic.Arctic._list_libraries', return_value=libs) as uncached_list_libraries:
         assert sorted(arctic._list_libraries_cached()) == sorted(libs)
         uncached_list_libraries.assert_not_called()
 
@@ -308,7 +308,7 @@ def test_cache_does_not_return_stale_data(arctic):
     time.sleep(0.2)
 
     # Should call uncached list_libraries if the data is stale according to caller.
-    with patch('arctic.arctic.Arctic._list_libraries', return_value=libs) as uncached_list_libraries:
+    with patch('giantarctic.arctic.Arctic._list_libraries', return_value=libs) as uncached_list_libraries:
         assert arctic._list_libraries_cached(newer_than_secs=0.1) == libs
         uncached_list_libraries.assert_called()
 
@@ -347,8 +347,8 @@ def test_disable_cache_by_settings(arctic):
     arctic._cache.set_caching_state(enabled=False)
 
     # Should not return cached results now.
-    with patch('arctic.arctic.Arctic._list_libraries', return_value=[lib]) as uncached_list_libraries:
-        with patch('arctic.arctic.Arctic._list_libraries_cached', return_value=[lib]) as cached_list_libraries:
+    with patch('giantarctic.arctic.Arctic._list_libraries', return_value=[lib]) as uncached_list_libraries:
+        with patch('giantarctic.arctic.Arctic._list_libraries_cached', return_value=[lib]) as cached_list_libraries:
             arctic.list_libraries()
             uncached_list_libraries.assert_called()
             cached_list_libraries.assert_not_called()
@@ -356,8 +356,8 @@ def test_disable_cache_by_settings(arctic):
     arctic._cache.set_caching_state(enabled=True)
 
     # Should used cached data again.
-    with patch('arctic.arctic.Arctic._list_libraries', return_value=[lib]) as uncached_list_libraries_e:
-        with patch('arctic.arctic.Arctic._list_libraries_cached', return_value=[lib]) as cached_list_libraries_e:
+    with patch('giantarctic.arctic.Arctic._list_libraries', return_value=[lib]) as uncached_list_libraries_e:
+        with patch('giantarctic.arctic.Arctic._list_libraries_cached', return_value=[lib]) as cached_list_libraries_e:
             arctic.list_libraries()
             uncached_list_libraries_e.assert_not_called()
             cached_list_libraries_e.assert_called()

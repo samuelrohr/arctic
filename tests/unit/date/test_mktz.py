@@ -4,7 +4,7 @@ import tzlocal
 from mock import patch
 from pytest import raises
 
-from arctic.date import mktz, TimezoneError
+from giantarctic.date import mktz, TimezoneError
 
 DEFAULT_TIME_ZONE_NAME = tzlocal.get_localzone().zone  # 'Europe/London'
 

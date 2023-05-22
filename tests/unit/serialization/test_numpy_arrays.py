@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 from pandas.util.testing import assert_frame_equal
 
-from arctic.serialization.numpy_arrays import FrameConverter, FrametoArraySerializer
+from giantarctic.serialization.numpy_arrays import FrameConverter, FrametoArraySerializer
 from tests.util import assert_frame_equal_
 
 

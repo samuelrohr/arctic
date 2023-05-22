@@ -12,8 +12,8 @@ try:
 except ImportError:
     pass
 
-from arctic._util import NP_OBJECT_DTYPE
-from arctic.serialization.numpy_records import SeriesSerializer, DataFrameSerializer
+from giantarctic._util import NP_OBJECT_DTYPE
+from giantarctic.serialization.numpy_records import SeriesSerializer, DataFrameSerializer
 from ._ndarray_store import NdarrayStore
 from .._compression import compress, decompress
 from .._config import FORCE_BYTES_TO_UNICODE

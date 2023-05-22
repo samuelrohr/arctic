@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from arctic.serialization.numpy_records import DataFrameSerializer
+from giantarctic.serialization.numpy_records import DataFrameSerializer
 from tests.integration.chunkstore.test_utils import create_test_data
 from tests.util import get_large_ts
 

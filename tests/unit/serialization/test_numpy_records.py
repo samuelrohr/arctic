@@ -5,7 +5,7 @@ from mock import patch, Mock, sentinel
 from numpy.testing import assert_array_equal
 from pandas import Timestamp
 
-import arctic.serialization.numpy_records as anr
+import giantarctic.serialization.numpy_records as anr
 
 
 class FastCheckSerializable(object):
@@ -42,7 +42,7 @@ def test_can_convert_to_records_without_objects_returns_false_on_exception_in_to
             store.fast_check_serializable = mymock
         else:
             store._to_records = mymock
-        with patch('arctic.serialization.numpy_records.log') as mock_log:
+        with patch('giantarctic.serialization.numpy_records.log') as mock_log:
             assert store.can_convert_to_records_without_objects(sentinel.df, 'my_symbol') is False
 
         assert 'Pandas dataframe my_symbol caused exception' in str(mock_log.warning.call_args)
@@ -61,7 +61,7 @@ def test_can_convert_to_records_without_objects_returns_false_when_records_have_
             store.fast_check_serializable = mymock
         else:
             store._to_records = mymock
-        with patch('arctic.serialization.numpy_records.log') as mock_log:
+        with patch('giantarctic.serialization.numpy_records.log') as mock_log:
             assert store.can_convert_to_records_without_objects(sentinel.df, 'my_symbol') is False
         mock_log.warning.assert_called_once_with('Pandas dataframe my_symbol contains Objects, saving as Blob')
         if fast_serializable_check:
@@ -79,7 +79,7 @@ def test_can_convert_to_records_without_objects_returns_false_when_records_have_
             store.fast_check_serializable = mymock
         else:
             store._to_records = mymock
-        with patch('arctic.serialization.numpy_records.log') as mock_log:
+        with patch('giantarctic.serialization.numpy_records.log') as mock_log:
             assert store.can_convert_to_records_without_objects(sentinel.df, 'my_symbol') is False
         mock_log.warning.assert_called_once_with('Pandas dataframe my_symbol contains >1 dimensional arrays, saving as Blob')
         if fast_serializable_check:
@@ -97,7 +97,7 @@ def test_can_convert_to_records_without_objects_returns_true_otherwise(fast_seri
             store.fast_check_serializable = mymock
         else:
             store._to_records = mymock
-        with patch('arctic.serialization.numpy_records.log') as mock_log:
+        with patch('giantarctic.serialization.numpy_records.log') as mock_log:
             assert store.can_convert_to_records_without_objects(sentinel.df, 'my_symbol') is True
         assert mock_log.warning.call_count == 0
         if fast_serializable_check:

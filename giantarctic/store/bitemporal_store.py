@@ -3,8 +3,8 @@ from datetime import datetime as dt
 
 import pandas as pd
 
-from arctic.date._mktz import mktz
-from arctic.multi_index import groupby_asof
+from giantarctic.date._mktz import mktz
+from giantarctic.multi_index import groupby_asof
 
 BitemporalItem = namedtuple('BitemporalItem', 'symbol, library, data, metadata, last_updated')
 

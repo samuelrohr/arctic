@@ -4,8 +4,8 @@ import os
 import pwd
 from multiprocessing import Pool
 
-from arctic.decorators import _get_host
-from arctic.store.audit import ArcticTransaction
+from giantarctic.decorators import _get_host
+from giantarctic.store.audit import ArcticTransaction
 from .utils import setup_logging
 from ..date import DateRange, to_pandas_closed_closed, CLOSED_OPEN, OPEN_CLOSED
 from ..hosts import get_arctic_lib

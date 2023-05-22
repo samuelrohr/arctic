@@ -5,7 +5,7 @@ from mock import Mock, sentinel, patch
 from pytest import raises
 
 # Do not remove PandasStore
-from arctic.store._pandas_ndarray_store import PandasDataFrameStore, PandasPanelStore, PandasStore
+from giantarctic.store._pandas_ndarray_store import PandasDataFrameStore, PandasPanelStore, PandasStore
 from tests.util import read_str_as_pandas
 
 
@@ -15,7 +15,7 @@ def test_panel_converted_to_dataframe_and_stacked_to_write():
     panel = Mock(shape=(1, 2, 3), axes=[Mock(names=['n%d' % i]) for i in range(3)])
     panel.to_frame.return_value.dtypes = [sentinel.dtype]
     with patch.object(PandasDataFrameStore, 'write') as mock_write:
-        with patch('arctic.store._pandas_ndarray_store.DataFrame') as DF:
+        with patch('giantarctic.store._pandas_ndarray_store.DataFrame') as DF:
             store.write(sentinel.mlib, sentinel.version, sentinel.symbol, panel, sentinel.prev)
     panel.to_frame.assert_called_with(filter_observations=False)
     DF.assert_called_with(panel.to_frame.return_value.stack.return_value)

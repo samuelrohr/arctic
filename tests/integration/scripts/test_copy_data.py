@@ -2,8 +2,8 @@ import pytest
 from mock import patch, call
 from pandas.util.testing import assert_frame_equal
 
-from arctic import arctic as m
-from arctic.scripts import arctic_copy_data as mcd
+from giantarctic import arctic as m
+from giantarctic.scripts import arctic_copy_data as mcd
 from ...util import read_str_as_pandas, run_as_main
 
 
@@ -45,7 +45,7 @@ def test_copy_data_no_force(arctic, mongo_host):
     # Create the user against the current mongo database
     src_host = 'arctic_' + src + '@' + mongo_host
     dest_host = 'arctic_' + dest + '@' + mongo_host
-    with patch('arctic.scripts.arctic_copy_data.logger') as logger:
+    with patch('giantarctic.scripts.arctic_copy_data.logger') as logger:
         run_as_main(mcd.main, '--src', src_host, '--dest', dest_host, '--log', 'CR101', 'some_ts', 'some_ts1')
 
     assert_frame_equal(ts, arctic[dest].read('some_ts').data)
@@ -69,7 +69,7 @@ def test_copy_data_force(arctic, mongo_host):
     # Create the user against the current mongo database
     src_host = src + '@' + mongo_host
     dest_host = dest + '@' + mongo_host
-    with patch('arctic.scripts.arctic_copy_data.logger') as logger:
+    with patch('giantarctic.scripts.arctic_copy_data.logger') as logger:
         run_as_main(mcd.main, '--src', src_host, '--dest', dest_host, '--log', 'CR101', '--force', 'some_ts', 'some_ts1')
 
     assert_frame_equal(ts, arctic[dest].read('some_ts').data)
@@ -93,7 +93,7 @@ def test_copy_data_splice(arctic, mongo_host):
     # Create the user against the current mongo database
     src_host = src + '@' + mongo_host
     dest_host = dest + '@' + mongo_host
-    with patch('arctic.scripts.arctic_copy_data.logger') as logger:
+    with patch('giantarctic.scripts.arctic_copy_data.logger') as logger:
         run_as_main(mcd.main, '--src', src_host, '--dest', dest_host, '--log', 'CR101', '--splice', 'some_ts', 'some_ts1')
 
     assert_frame_equal(ts3, arctic[dest].read('some_ts').data)
@@ -117,7 +117,7 @@ def test_copy_data_wild(arctic, mongo_host):
     # Create the user against the current mongo database
     src_host = 'arctic_' + src + '@' + mongo_host
     dest_host = 'arctic_' + dest + '@' + mongo_host
-    with patch('arctic.scripts.arctic_copy_data.logger') as logger:
+    with patch('giantarctic.scripts.arctic_copy_data.logger') as logger:
         run_as_main(mcd.main, '--src', src_host, '--dest', dest_host, '--log', 'CR101', '.*_a_.*', '.*_b_.*')
 
     assert_frame_equal(ts, arctic[dest].read('some_a_ts').data)
@@ -135,7 +135,7 @@ def test_copy_data_doesnt_exist(arctic, mongo_host):
     # Create the user against the current mongo database
     src_host = src + '@' + mongo_host
     dest_host = dest + '@' + mongo_host
-    with patch('arctic.scripts.arctic_copy_data.logger') as logger:
+    with patch('giantarctic.scripts.arctic_copy_data.logger') as logger:
         run_as_main(mcd.main, '--src', src_host, '--dest', dest_host, '--log', 'CR101', 'some_ts')
 
     assert logger.info.call_args_list == [call('Copying data from %s -> %s' % (src_host, dest_host)),

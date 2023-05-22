@@ -6,7 +6,7 @@ from pandas import DataFrame, Index, MultiIndex
 from pandas.util.testing import assert_frame_equal
 from tests.util import assert_frame_equal_
 
-from arctic.chunkstore.utils import read_apply
+from giantarctic.chunkstore.utils import read_apply
 
 
 def create_test_data(size=5, index=True, multiindex=True, random_data=True, random_ids=True, date_offset=0, use_hours=False, cols=1):

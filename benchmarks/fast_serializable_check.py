@@ -1,6 +1,6 @@
 import time
 
-import arctic.serialization.numpy_records as anr
+import giantarctic.serialization.numpy_records as anr
 from tests.unit.serialization.serialization_test_data import _mixed_test_data as input_test_data
 
 df_serializer = anr.DataFrameSerializer()

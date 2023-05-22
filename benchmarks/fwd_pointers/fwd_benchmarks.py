@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 from dateutil.rrule import rrule, MINUTELY
 
-import arctic
-from arctic import Arctic
-from arctic._config import FwPointersCfg
+import giantarctic
+from giantarctic import Arctic
+from giantarctic._config import FwPointersCfg
 # import matplotlib.pyplot as plt
 
 price_template = (800.0, 1200.0)
@@ -41,15 +41,15 @@ class FwPointersCtx:
         self.do_reconcile = do_reconcile
 
     def __enter__(self):
-        self.orig_value = arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.value_to_test
+        self.orig_value = giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.value_to_test
 
-        self.reconcile_orig_value = arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.do_reconcile
+        self.reconcile_orig_value = giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.do_reconcile
 
     def __exit__(self, *args):
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.orig_value
-        arctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.reconcile_orig_value
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_CFG = self.orig_value
+        giantarctic.store._ndarray_store.ARCTIC_FORWARD_POINTERS_RECONCILE = self.reconcile_orig_value
 
 
 def gen_sparse_rows_for_range(n_rows, low, high, dense):

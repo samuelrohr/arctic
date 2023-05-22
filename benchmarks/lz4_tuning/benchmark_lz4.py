@@ -7,8 +7,8 @@ from multiprocessing.pool import ThreadPool
 import numpy as np
 import pandas as pd
 
-import arctic._compression as c
-from arctic.serialization.numpy_records import DataFrameSerializer
+import giantarctic._compression as c
+from giantarctic.serialization.numpy_records import DataFrameSerializer
 
 c.enable_parallel_lz4(True)
 c.BENCHMARK_MODE = True

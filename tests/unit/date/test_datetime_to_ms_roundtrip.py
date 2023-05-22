@@ -3,7 +3,7 @@ import datetime
 import pytest
 import pytz
 
-from arctic.date import mktz, datetime_to_ms, ms_to_datetime
+from giantarctic.date import mktz, datetime_to_ms, ms_to_datetime
 
 
 def assert_roundtrip(tz):

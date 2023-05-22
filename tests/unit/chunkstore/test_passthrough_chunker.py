@@ -1,7 +1,7 @@
 import pytest
 from pandas import DataFrame, Series
 
-from arctic.chunkstore.passthrough_chunker import PassthroughChunker
+from giantarctic.chunkstore.passthrough_chunker import PassthroughChunker
 
 
 def test_pass_thru():

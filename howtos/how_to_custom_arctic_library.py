@@ -5,8 +5,8 @@ from datetime import datetime as dt
 from bson.binary import Binary
 import pickle
 
-from arctic import Arctic, register_library_type
-from arctic.decorators import mongo_retry
+from giantarctic import Arctic, register_library_type
+from giantarctic.decorators import mongo_retry
 
 
 #

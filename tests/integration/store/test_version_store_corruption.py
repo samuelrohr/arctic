@@ -2,8 +2,8 @@ import pymongo
 import pytest
 from pymongo.errors import OperationFailure
 
-import arctic
-from arctic.store import _version_store_utils as vsu
+import giantarctic
+from giantarctic.store import _version_store_utils as vsu
 from tests.integration.chunkstore.test_utils import create_test_data
 
 symbol = 'TS1'
@@ -211,22 +211,22 @@ def test_append_fail_after_delete_noupsert(library, library_name):
 
 
 def test_append_without_corrupt_check(library, library_name):
-    orig_check = arctic.store._ndarray_store.CHECK_CORRUPTION_ON_APPEND
-    arctic.store._ndarray_store.set_corruption_check_on_append(False)
+    orig_check = giantarctic.store._ndarray_store.CHECK_CORRUPTION_ON_APPEND
+    giantarctic.store._ndarray_store.set_corruption_check_on_append(False)
     try:
         with pytest.raises(OperationFailure):
             _corrupt_with_append_only(library, library_name)
     finally:
-        arctic.store._ndarray_store.set_corruption_check_on_append(orig_check)
+        giantarctic.store._ndarray_store.set_corruption_check_on_append(orig_check)
 
 
 def test_append_with_corrupt_check(library, library_name):
-    orig_check = arctic.store._ndarray_store.CHECK_CORRUPTION_ON_APPEND
-    arctic.store._ndarray_store.set_corruption_check_on_append(True)
+    orig_check = giantarctic.store._ndarray_store.CHECK_CORRUPTION_ON_APPEND
+    giantarctic.store._ndarray_store.set_corruption_check_on_append(True)
     try:
         _corrupt_with_append_only(library, library_name)
     finally:
-        arctic.store._ndarray_store.set_corruption_check_on_append(orig_check)
+        giantarctic.store._ndarray_store.set_corruption_check_on_append(orig_check)
 
 
 def test_fast_check_corruption(library, library_name):

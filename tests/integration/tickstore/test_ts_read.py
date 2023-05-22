@@ -10,9 +10,9 @@ from pandas import DatetimeIndex
 from pandas.util.testing import assert_frame_equal
 from pymongo import ReadPreference
 
-from arctic._util import mongo_count
-from arctic.date import DateRange, mktz, CLOSED_CLOSED, CLOSED_OPEN, OPEN_CLOSED, OPEN_OPEN
-from arctic.exceptions import NoDataFoundException
+from giantarctic._util import mongo_count
+from giantarctic.date import DateRange, mktz, CLOSED_CLOSED, CLOSED_OPEN, OPEN_CLOSED, OPEN_OPEN
+from giantarctic.exceptions import NoDataFoundException
 
 
 def test_read(tickstore_lib):

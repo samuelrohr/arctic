@@ -10,8 +10,8 @@ from bson import Binary
 from pandas.compat import pickle_compat
 from pymongo.errors import OperationFailure
 
-from arctic._config import FW_POINTERS_REFS_KEY, FW_POINTERS_CONFIG_KEY, FwPointersCfg
-from arctic._util import mongo_count, get_fwptr_config
+from giantarctic._config import FW_POINTERS_REFS_KEY, FW_POINTERS_CONFIG_KEY, FwPointersCfg
+from giantarctic._util import mongo_count, get_fwptr_config
 
 
 def _split_arrs(array_2d, slices):

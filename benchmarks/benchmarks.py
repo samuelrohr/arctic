@@ -2,7 +2,7 @@ import random
 
 import pandas as pd
 
-from arctic import Arctic
+from giantarctic import Arctic
 
 
 def gen_dataframe_random(cols, rows):

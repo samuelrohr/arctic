@@ -6,7 +6,7 @@ from datetime import datetime as dt
 
 import pytest
 
-import arctic._compression as c
+import giantarctic._compression as c
 
 try:
     from lz4.block import compress as lz4_compress, decompress as lz4_decompress

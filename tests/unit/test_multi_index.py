@@ -7,7 +7,7 @@ import pytest
 from pandas import to_datetime as dt
 from pandas.util.testing import assert_frame_equal
 
-from arctic.multi_index import groupby_asof, fancy_group_by, insert_at
+from giantarctic.multi_index import groupby_asof, fancy_group_by, insert_at
 from tests.util import multi_index_df_from_arrs
 
 

@@ -3,7 +3,7 @@ from datetime import datetime as dt
 from mock import create_autospec
 from pandas.util.testing import assert_frame_equal
 
-from arctic.store.bitemporal_store import BitemporalStore
+from giantarctic.store.bitemporal_store import BitemporalStore
 from tests.util import read_str_as_pandas
 
 ts1 = read_str_as_pandas("""           sample_dt | near

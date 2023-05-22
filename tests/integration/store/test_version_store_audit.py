@@ -6,9 +6,9 @@ from mock import patch
 from pandas.util.testing import assert_frame_equal
 from pymongo.errors import OperationFailure
 
-from arctic._util import mongo_count
-from arctic.exceptions import ConcurrentModificationException
-from arctic.store.audit import ArcticTransaction
+from giantarctic._util import mongo_count
+from giantarctic.exceptions import ConcurrentModificationException
+from giantarctic.store.audit import ArcticTransaction
 from ...util import read_str_as_pandas
 
 ts1 = read_str_as_pandas("""         times | near

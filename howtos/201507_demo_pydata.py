@@ -7,7 +7,7 @@ from datetime import datetime
 import pandas as pd
 import ystockquote
 
-from arctic import Arctic
+from giantarctic import Arctic
 
 
 ################################################

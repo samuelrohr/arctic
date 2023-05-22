@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 from bson import Binary
 
-from arctic._config import ARCTIC_AUTO_EXPAND_CHUNK_SIZE
-from arctic.serialization.numpy_records import PandasSerializer
+from giantarctic._config import ARCTIC_AUTO_EXPAND_CHUNK_SIZE
+from giantarctic.serialization.numpy_records import PandasSerializer
 from .._compression import compress
 from .._config import MAX_DOCUMENT_SIZE
 from .._util import NP_OBJECT_DTYPE
