@@ -23,7 +23,7 @@ from setuptools import find_packages
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
-long_description_content_type='text/markdown'
+long_description_content_type = 'text/markdown'
 long_description = open('README.md').read()
 changelog = open('CHANGES.md').read()
 
@@ -71,7 +71,7 @@ setup(
     cmdclass={'test': PyTest},
     setup_requires=["numpy<=1.24.2",
                     "setuptools-git",
-                   ],
+                    ],
     install_requires=["decorator",
                       "enum-compat",
                       "mock",
@@ -97,16 +97,16 @@ setup(
                    "tzlocal<=1.4; python_version<='3.6'",
                    ],
     entry_points={'console_scripts': [
-                                        'arctic_init_library = giantarctic.scripts.arctic_init_library:main',
-                                        'arctic_list_libraries = giantarctic.scripts.arctic_list_libraries:main',
-                                        'arctic_delete_library = giantarctic.scripts.arctic_delete_library:main',
-                                        'arctic_enable_sharding = giantarctic.scripts.arctic_enable_sharding:main',
-                                        'arctic_copy_data = giantarctic.scripts.arctic_copy_data:main',
-                                        'arctic_create_user = giantarctic.scripts.arctic_create_user:main',
-                                        'arctic_prune_versions = giantarctic.scripts.arctic_prune_versions:main',
-                                        'arctic_fsck = giantarctic.scripts.arctic_fsck:main',
-                                        ]
-                  },
+        'arctic_init_library = giantarctic.scripts.arctic_init_library:main',
+        'arctic_list_libraries = giantarctic.scripts.arctic_list_libraries:main',
+        'arctic_delete_library = giantarctic.scripts.arctic_delete_library:main',
+        'arctic_enable_sharding = giantarctic.scripts.arctic_enable_sharding:main',
+        'arctic_copy_data = giantarctic.scripts.arctic_copy_data:main',
+        'arctic_create_user = giantarctic.scripts.arctic_create_user:main',
+        'arctic_prune_versions = giantarctic.scripts.arctic_prune_versions:main',
+        'arctic_fsck = giantarctic.scripts.arctic_fsck:main',
+    ]
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
