@@ -69,6 +69,7 @@ setup(
     long_description='\n'.join((long_description, changelog)),
     long_description_content_type="text/markdown",
     cmdclass={'test': PyTest},
+    python_requires='>=3.6,<3.10',
     setup_requires=["numpy<=1.24.2",
                     "setuptools-git",
                     ],
@@ -85,17 +86,19 @@ setup(
                       ],
     # Note: pytest >= 4.1.0 is not compatible with pytest-cov < 2.6.1.
     # deprecated
-    tests_require=["mock<=2.0.0",
-                   "mockextras",
-                   "pytest",
-                   "pytest-cov",
-                   "pytest-server-fixtures",
-                   "pytest-timeout",
-                   "pytest-xdist<=1.26.1",
-                   "tomli<2; python_version=='3.6'",
-                   "lz4",
-                   "tzlocal<=1.4; python_version<='3.6'",
-                   ],
+    extras_require={
+        "tests": ["mock<=2.0.0",
+                  "mockextras",
+                  "pytest",
+                  "pytest-cov",
+                  "pytest-server-fixtures",
+                  "pytest-timeout",
+                  "pytest-xdist<=1.26.1",
+                  "tomli<2; python_version=='3.6'",
+                  "lz4",
+                  "tzlocal<=4.2; python_version<='3.6'"
+                  ],
+    },
     entry_points={'console_scripts': [
         'arctic_init_library = giantarctic.scripts.arctic_init_library:main',
         'arctic_list_libraries = giantarctic.scripts.arctic_list_libraries:main',
