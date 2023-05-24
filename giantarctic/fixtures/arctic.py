@@ -22,7 +22,7 @@ def mongo_host(mongo_server):
 def arctic(mongo_server):
     logger.info('arctic.fixtures: arctic init()')
     mongo_server.api.drop_database('arctic')
-    mongo_server.api.drop_database('arctic_{}'.format(getpass.getuser()))
+    mongo_server.api.drop_database('arctic_{}'.format(getpass.getuser().replace(".", "")))
     arctic = m.Arctic(mongo_host=mongo_server.api)
     # Do not add global libraries here: use specific fixtures below.
     # Remember, for testing it does not usually matter what your libraries are called.
@@ -212,7 +212,7 @@ def library_name():
 
 @pytest.fixture(scope="function")
 def user_library_name():
-    return "{}.TEST".format(getpass.getuser())
+    return "{}.TEST".format(getpass.getuser().replace(".", ""))
 
 
 @pytest.fixture(scope="function")
