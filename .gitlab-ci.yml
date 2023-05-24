@@ -15,6 +15,13 @@ test_homolog:
     - apt-get update
     - apt-get install -y gcc g++
 
+    ## Install mongodb needed for integration tests
+    - apt-get install -y gnupg curl
+    - curl -fsSL https://pgp.mongodb.com/server-4.4.asc | gpg -o /usr/share/keyrings/mongodb-server-4.4.gpg --dearmor
+    - echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    - apt-get update
+    - apt-get install -y mongodb-org=4.4.22 mongodb-org-server=4.4.22 mongodb-org-shell=4.4.22 mongodb-org-mongos=4.4.22 mongodb-org-tools=4.4.22
+
     ## Create Conda environment
     - conda create -n model python=3.9
     - source activate model
@@ -24,7 +31,7 @@ test_homolog:
     - pip install --extra-index-url https://$GS_PYPI_USER:$GS_PYPI_PWD@nexus.giantsteps.me/repository/gs_pypi_snapshot/simple/ .[tests]
 
     ## Only run unittests - Integration tests are run apart
-    - coverage run -m pytest tests/unit -v
+    - coverage run -m pytest tests/ -v
     - coverage report
   coverage: '/TOTAL[\s\d]+\s(\d{1,3}%)/'
 
@@ -36,6 +43,13 @@ test_master:
     ## Install gcc
     - apt-get update
     - apt-get install -y gcc g++
+
+    ## Install mongodb needed for integration tests
+    - apt-get install -y gnupg curl
+    - curl -fsSL https://pgp.mongodb.com/server-4.4.asc | gpg -o /usr/share/keyrings/mongodb-server-4.4.gpg --dearmor
+    - echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    - apt-get update
+    - apt-get install -y mongodb-org=4.4.22 mongodb-org-server=4.4.22 mongodb-org-shell=4.4.22 mongodb-org-mongos=4.4.22 mongodb-org-tools=4.4.22
 
     ## Create Conda environment
     - conda create -n model python=3.9
