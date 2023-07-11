@@ -23,7 +23,7 @@ from setuptools import find_packages
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
-long_description_content_type='text/markdown'
+long_description_content_type = 'text/markdown'
 long_description = open('README.md').read()
 changelog = open('CHANGES.md').read()
 
@@ -69,35 +69,35 @@ setup(
     long_description='\n'.join((long_description, changelog)),
     long_description_content_type="text/markdown",
     cmdclass={'test': PyTest},
-    setup_requires=["numpy<1.19.0",
+    python_requires='>=3.6,<3.10',
+    setup_requires=["numpy<=1.24.2",
                     "setuptools-git",
                     ],
     install_requires=["decorator",
                       "enum-compat",
                       "mock",
                       "mockextras",
-                      "pandas<=1.5.3",
+                      "pandas>=1.1.5, <= 1.5.3",
                       "numpy<=1.24.2",
-                      "pymongo>=3.6.0, <= 3.11.0",
+                      "pymongo>=3.6.0, <= 3.12.0",
                       "pytz",
-                      "tzlocal",
+                      "tzlocal==4.2",
                       "lz4",
                       ],
     # Note: pytest >= 4.1.0 is not compatible with pytest-cov < 2.6.1.
     # deprecated
     extras_require={
-        "tests": [
-            "mock<=2.0.0",
-            "mockextras",
-            "pytest",
-            "pytest-cov",
-            "pytest-server-fixtures",
-            "pytest-timeout",
-            "pytest-xdist<=1.26.1",
-            "tomli<2; python_version=='3.6'",
-            "lz4",
-            "tzlocal<=1.4; python_version<='3.6'"
-        ],
+        "tests": ["mock<=2.0.0",
+                  "mockextras",
+                  "pytest",
+                  "pytest-cov",
+                  "pytest-server-fixtures",
+                  "pytest-timeout",
+                  "pytest-xdist<=1.26.1",
+                  "tomli<2; python_version=='3.6'",
+                  "lz4",
+                  "tzlocal<=4.2; python_version<='3.6'"
+                  ],
     },
     entry_points={'console_scripts': [
         'arctic_init_library = arctic.scripts.arctic_init_library:main',
@@ -116,6 +116,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         "Operating System :: POSIX",
         "Operating System :: MacOS",

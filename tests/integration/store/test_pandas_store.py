@@ -914,45 +914,54 @@ def assert_range_slice(library, expected, date_range, **kwargs):
 
 
 def test_daterange_single_chunk(library):
-    df = read_csv(StringIO("""2015-08-10 00:00:00,200005,1.0
-                              2015-08-10 00:00:00,200012,2.0
-                              2015-08-10 00:00:00,200016,3.0
-                              2015-08-11 00:00:00,200005,1.0
-                              2015-08-11 00:00:00,200012,2,0
-                              2015-08-11 00:00:00,200016,3.0"""), parse_dates=[0],
-                  names=['date', 'security_id', 'value']).set_index(['date', 'security_id'])
+    data = [
+        {"date": dt(2015, 8, 10), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 10), "security_id": "200012", "value": "2.0"},
+        {"date": dt(2015, 8, 10), "security_id": "200016", "value": "3.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200012", "value": "2.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200016", "value": "3.0"}
+    ]
+    df = pd.DataFrame.from_records(data).set_index(["date", "security_id"])
+
     library.write('MYARR', df)
     assert_range_slice(library, df[dt(2015, 8, 11):], DateRange(dt(2015, 8, 11), dt(2015, 8, 11)))
 
 
 def test_daterange_when_end_beyond_chunk_index(library):
-    df = read_csv(StringIO("""2015-08-10 00:00:00,200005,1.0
-                              2015-08-10 00:00:00,200012,2.0
-                              2015-08-10 00:00:00,200016,3.0
-                              2015-08-11 00:00:00,200005,1.0
-                              2015-08-11 00:00:00,200012,2,0
-                              2015-08-11 00:00:00,200016,3.0"""), parse_dates=[0],
-                  names=['date', 'security_id', 'value']).set_index(['date', 'security_id'])
+    data = [
+        {"date": dt(2015, 8, 10), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 10), "security_id": "200012", "value": "2.0"},
+        {"date": dt(2015, 8, 10), "security_id": "200016", "value": "3.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200012", "value": "2.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200016", "value": "3.0"}
+    ]
+    df = pd.DataFrame.from_records(data).set_index(["date", "security_id"])
     library.write('MYARR', df)
     assert_range_slice(library, df[dt(2015, 8, 11):], DateRange(dt(2015, 8, 11), dt(2015, 8, 12)))
 
 
 def test_daterange_when_end_beyond_chunk_index_no_start(library):
-    df = read_csv(StringIO("""2015-08-10 00:00:00,200005,1.0
-                              2015-08-10 00:00:00,200012,2.0
-                              2015-08-10 00:00:00,200016,3.0
-                              2015-08-11 00:00:00,200005,1.0
-                              2015-08-11 00:00:00,200012,2,0
-                              2015-08-11 00:00:00,200016,3.0"""), parse_dates=[0],
-                  names=['date', 'security_id', 'value']).set_index(['date', 'security_id'])
+    data = [
+        {"date": dt(2015, 8, 10), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 10), "security_id": "200012", "value": "2.0"},
+        {"date": dt(2015, 8, 10), "security_id": "200016", "value": "3.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200012", "value": "2.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200016", "value": "3.0"}
+    ]
+    df = pd.DataFrame.from_records(data).set_index(["date", "security_id"])
     library.write('MYARR', df)
     assert_range_slice(library, df, DateRange(end=dt(2015, 8, 12)))
 
 
 def test_daterange_fails_with_timezone_start(library):
-    df = read_csv(StringIO("""2015-08-10 00:00:00,200005,1.0
-                              2015-08-11 00:00:00,200016,3.0"""), parse_dates=[0],
-                  names=['date', 'security_id', 'value']).set_index(['date', 'security_id'])
+    data = [
+        {"date": dt(2015, 8, 10), "security_id": "200005", "value": "1.0"},
+        {"date": dt(2015, 8, 11), "security_id": "200016", "value": "3.0"}
+    ]
+    df = pd.DataFrame.from_records(data).set_index(["date", "security_id"])
     library.write('MYARR', df)
     with pytest.raises(ValueError):
         library.read('MYARR', date_range=DateRange(start=dt(2015, 1, 1, tzinfo=mktz())))

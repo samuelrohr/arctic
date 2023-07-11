@@ -260,7 +260,8 @@ def test_empty_append_concat_and_rewrite_3(library, fw_pointers_cfg):
         assert np.all(saved_arr == ndarr2)
 
 
-def test_append_with_extra_columns(library):
+@pytest.mark.skipif(np.__version__ >= '1.20.0', reason="numpy.float and numpy.int deprecated after numpy 1.20.0.")
+def test_append_with_extra_columns_old_numpy(library):
     ndarr = np.array([(2.1, 1, "a")], dtype=[('C', np.float), ('B', np.int), ('A', 'S1')])
     ndarr2 = np.array([("b", 2, 3.1, 'c', 4, 5.)], dtype=[('A', 'S1'), ('B', np.int), ('C', np.float),
                                                           ('D', 'S1'), ('E', np.int), ('F', np.float)])
@@ -268,6 +269,24 @@ def test_append_with_extra_columns(library):
                          ("b", 2, 3.1, 'c', 4, 5.)],
                         dtype=np.dtype([('A', 'S1'), ('B', np.int), ('C', np.float),
                                         ('D', 'S1'), ('E', np.int), ('F', np.float)]))
+    library.write('MYARR', ndarr)
+    library.append('MYARR', ndarr2)
+    saved_arr = library.read('MYARR').data
+
+    assert expected.dtype == saved_arr.dtype
+    assert_equal(expected.tolist(), saved_arr.tolist())
+
+
+@pytest.mark.skipif(np.__version__ < '1.20.0',
+                    reason="numpy.float and numpy.int deprecated after numpy 1.20.0. Using Python standard types")
+def test_append_with_extra_columns_new_numpy(library):
+    ndarr = np.array([(2.1, 1, "a")], dtype=[('C', float), ('B', int), ('A', 'S1')])
+    ndarr2 = np.array([("b", 2, 3.1, 'c', 4, 5.)], dtype=[('A', 'S1'), ('B', int), ('C', float),
+                                                          ('D', 'S1'), ('E', int), ('F', float)])
+    expected = np.array([("a", 1, 2.1, '', 0, np.nan),
+                         ("b", 2, 3.1, 'c', 4, 5.)],
+                        dtype=np.dtype([('A', 'S1'), ('B', int), ('C', float),
+                                        ('D', 'S1'), ('E', int), ('F', float)]))
     library.write('MYARR', ndarr)
     library.append('MYARR', ndarr2)
     saved_arr = library.read('MYARR').data

@@ -19,7 +19,7 @@ def test_enable_sharding(mongo_host, arctic, mongo_server, user_library, user_li
     assert len(admin.command.call_args_list) == 3
     assert call('buildinfo', read_preference=Primary(), session=None) in admin.command.call_args_list or call('buildinfo', read_preference=Primary()) in admin.command.call_args_list
     assert call('shardCollection', 'arctic_' + user_library_name, key={'symbol': 'hashed'}) in admin.command.call_args_list
-    assert call('enablesharding', 'arctic_' + getpass.getuser()) in admin.command.call_args_list
+    assert call('enablesharding', 'arctic_' + getpass.getuser().replace(".", "")) in admin.command.call_args_list
 
 
 def test_enable_sharding_already_on_db(mongo_host, arctic, mongo_server, user_library, user_library_name):
@@ -33,7 +33,7 @@ def test_enable_sharding_already_on_db(mongo_host, arctic, mongo_server, user_li
     assert len(admin.command.call_args_list) == 3
     assert call('buildinfo', read_preference=Primary(), session=None) in admin.command.call_args_list or call('buildinfo', read_preference=Primary()) in admin.command.call_args_list
     assert call('shardCollection', 'arctic_' + user_library_name, key={'symbol': 'hashed'}) in admin.command.call_args_list
-    assert call('enablesharding', 'arctic_' + getpass.getuser()) in admin.command.call_args_list
+    assert call('enablesharding', 'arctic_' + getpass.getuser().replace(".", "")) in admin.command.call_args_list
 
 
 def test_enable_sharding_on_db_other_failure(mongo_host, arctic, mongo_server, user_library, user_library_name):

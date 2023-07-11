@@ -1,4 +1,6 @@
+import dateutil.tz
 import logging
+import re
 
 import numpy as np
 from pandas import DataFrame, MultiIndex, Series, DatetimeIndex, Index
@@ -122,6 +124,15 @@ class PandasSerializer(object):
                 if level_no < len(index_tz):
                     tz = index_tz[level_no]
                     if tz is not None:
+                        if "tzfile" in tz:
+                            # tz can be a String pointing to a tzfile, e.g., "tzfile('/usr/share/zoneinfo/UTC')"
+                            # Extract the filepath from the String
+                            file_pattern = r"\((.*?)\)"
+                            tz_file_path = re.findall(file_pattern, tz)[0]
+                            # Use dateutil create a tzfile object from filepath
+                            # eval() is used to remove single-quotes
+                            tz = dateutil.tz.tz.gettz(eval(tz_file_path))
+
                         if not isinstance(level, DatetimeIndex) and len(level) == 0:
                             # index type information got lost during save as the index was empty, cast back
                             level = DatetimeIndex([], tz=tz)
