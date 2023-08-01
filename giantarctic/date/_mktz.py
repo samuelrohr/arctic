@@ -29,7 +29,12 @@ def mktz(zone=None):
     TimezoneError : Raised if a user inputs a bad timezone name.
     """
     if zone is None:
-        zone = tzlocal.get_localzone().zone
+        try:
+            zone = tzlocal.get_localzone_name()
+        except Exception:
+            # From tzlocal doc; get_localzone_name may fail under some
+            # UNIX systems if there is no zone configured
+            zone = tzlocal.get_localzone().zone
 
     tz = dateutil.tz.gettz(zone)
     if not tz:

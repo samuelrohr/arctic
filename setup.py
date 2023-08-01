@@ -58,7 +58,7 @@ class PyTest(TestCommand):
 
 setup(
     name="giantarctic",
-    version="1.0.0",
+    version="1.0.1",
     author="Man AHL Technology",
     author_email="arctic@man.com",
     description=("AHL Research Versioned TimeSeries and Tick store"),
@@ -81,7 +81,7 @@ setup(
                       "numpy<=1.24.2",
                       "pymongo>=3.6.0, <= 3.12.0",
                       "pytz",
-                      "tzlocal==4.2",
+                      "tzlocal>=4.2, <= 5.0.1",
                       "lz4",
                       ],
     # Note: pytest >= 4.1.0 is not compatible with pytest-cov < 2.6.1.

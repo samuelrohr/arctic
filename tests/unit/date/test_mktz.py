@@ -6,7 +6,7 @@ from pytest import raises
 
 from giantarctic.date import mktz, TimezoneError
 
-DEFAULT_TIME_ZONE_NAME = tzlocal.get_localzone().zone  # 'Europe/London'
+DEFAULT_TIME_ZONE_NAME = tzlocal.get_localzone_name()  # 'Europe/London'
 
 
 def test_mktz():
