@@ -58,7 +58,7 @@ class PyTest(TestCommand):
 
 setup(
     name="giantarctic",
-    version="1.0.1",
+    version="1.0.2",
     author="Man AHL Technology",
     author_email="arctic@man.com",
     description=("AHL Research Versioned TimeSeries and Tick store"),
@@ -69,7 +69,7 @@ setup(
     long_description='\n'.join((long_description, changelog)),
     long_description_content_type="text/markdown",
     cmdclass={'test': PyTest},
-    python_requires='>=3.6,<3.10',
+    python_requires='>=3.6,<4.0',
     setup_requires=["numpy<=1.24.2",
                     "setuptools-git",
                     ],

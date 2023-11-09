@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.0.2
+    * Changed python maximum version to lower than v4.0
+
+### 1.0.1 
+    * Giant arctic released first version
+
 ### 1.81.2 (2023-05-11)
   * Feature: #1000, #1001, #1002, #1003, #1007, #1008 ArcticDB docs, links etc
   * Bugfix:  #1009 force CircleCI to install tzlocal==4.2
