@@ -24,5 +24,13 @@ else:
 
 register_versioned_storage(PandasDataFrameStore)
 register_versioned_storage(PandasSeriesStore)
-register_versioned_storage(PandasPanelStore)
+try:
+    # TODO delete when early Pandas version support removed
+    import warnings
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    from pandas import Panel
+except ImportError:
+    pass
+else:
+    register_versioned_storage(PandasPanelStore)
 register_versioned_storage(NdarrayStore)
