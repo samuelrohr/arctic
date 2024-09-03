@@ -17,10 +17,12 @@ test_homolog:
 
     ## Install mongodb needed for integration tests
     - apt-get install -y gnupg curl
-    - curl -fsSL https://pgp.mongodb.com/server-4.4.asc | gpg -o /usr/share/keyrings/mongodb-server-4.4.gpg --dearmor
-    - echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    - curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | \
+      sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg \
+      --dearmor
+    - echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
     - apt-get update
-    - apt-get install -y mongodb-org=4.4.22 mongodb-org-server=4.4.22 mongodb-org-shell=4.4.22 mongodb-org-mongos=4.4.22 mongodb-org-tools=4.4.22
+    - sudo apt-get install -y mongodb-org
 
     ## Create Conda environment
     - conda create -n model python=3.9
@@ -44,12 +46,18 @@ test_master:
     - apt-get update
     - apt-get install -y gcc g++
 
+    ## Install libssl needed for MongoDB
+    - wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+    - dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+  
     ## Install mongodb needed for integration tests
     - apt-get install -y gnupg curl
-    - curl -fsSL https://pgp.mongodb.com/server-4.4.asc | gpg -o /usr/share/keyrings/mongodb-server-4.4.gpg --dearmor
-    - echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    - curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | \
+      sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg \
+      --dearmor
+    - echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
     - apt-get update
-    - apt-get install -y mongodb-org=4.4.22 mongodb-org-server=4.4.22 mongodb-org-shell=4.4.22 mongodb-org-mongos=4.4.22 mongodb-org-tools=4.4.22
+    - sudo apt-get install -y mongodb-org
 
     ## Create Conda environment
     - conda create -n model python=3.9
